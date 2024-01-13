@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRouter from './routes/auth.routes.js';
+import path from 'path';
 dotenv.config();
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -18,6 +19,8 @@ mongoose
     console.log(err);
   });
 
+
+  const __dirname = path.resolve();
 const app = express();
 app.use(cookieParser());
 
@@ -34,6 +37,12 @@ app.use('/api/', router);
 app.use('/api/', expenseRouter);
 app.use('/api/', financialRouter);
 
+
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+})
 
 
 app.use((err, req, res, next) => {
