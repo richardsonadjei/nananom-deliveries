@@ -52,7 +52,7 @@ export default function Header() {
                 </Nav.Link>
                 {currentUser.role === 'ceo' && (
                   <Nav.Link as={Link} to="/sign-up" className="text-dark">
-                    Create User
+                    Create New User
                   </Nav.Link>
                 )}
               </>
@@ -64,7 +64,7 @@ export default function Header() {
                 {/* Show "Sign Up" only if the role is not "employee" or "manager" */}
                 {currentUser?.role !== 'employee' && currentUser?.role !== 'manager' && (
                   <Nav.Link as={Link} to="/sign-up" className="text-dark">
-                    Create User
+                    Create New User
                   </Nav.Link>
                 )}
               </>
