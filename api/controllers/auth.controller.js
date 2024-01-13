@@ -54,17 +54,19 @@ export const registerUser = async (req, res,next) => {
 
 export const signin = async (req, res, next) => {
   const { userNameOrEmail, password } = req.body;
-  
+
   try {
     // Find user by userName or email
     const validUser = await User.findOne({
       $or: [{ userName: userNameOrEmail }, { email: userNameOrEmail }],
     });
 
+    // Check if the user is not found
     if (!validUser) {
       return res.status(404).json({ error: 'User not found!' });
     }
 
+    // Check if the password is valid
     const validPassword = bcryptjs.compareSync(password, validUser.password);
     if (!validPassword) {
       return res.status(401).json({ error: 'Wrong credentials!' });
@@ -91,10 +93,12 @@ export const signin = async (req, res, next) => {
         email: validUser.email,
         role: validUser.role,
       });
+
   } catch (error) {
     next(error);
   }
 };
+
 
 
 export const updateProfile = async (req, res, next) => {
