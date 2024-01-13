@@ -27,3 +27,14 @@
     }
   }
   
+
+/* SIGN-UP */
+  .form-signup {
+    background-color: rgba(255, 255, 255, 0.9); /* Transparent white background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Add any additional styling as needed */
+  

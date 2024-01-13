@@ -1,7 +1,9 @@
 import User from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';
 
-export const registerUser = async (req, res) => {
+import jwt from 'jsonwebtoken';
+
+export const registerUser = async (req, res,next) => {
   const {
     name,
     userName,
@@ -42,10 +44,56 @@ export const registerUser = async (req, res) => {
     await newUser.save();
     res.status(201).json('User registered successfully!');
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
+
+
+
+export const signin = async (req, res, next) => {
+  const { userNameOrEmail, password } = req.body;
+  
+  try {
+    // Find user by userName or email
+    const validUser = await User.findOne({
+      $or: [{ userName: userNameOrEmail }, { email: userNameOrEmail }],
+    });
+
+    if (!validUser) {
+      return res.status(404).json({ error: 'User not found!' });
+    }
+
+    const validPassword = bcryptjs.compareSync(password, validUser.password);
+    if (!validPassword) {
+      return res.status(401).json({ error: 'Wrong credentials!' });
+    }
+
+    // Include relevant information in the token payload
+    const tokenPayload = {
+      id: validUser._id,
+      userName: validUser.userName,
+      email: validUser.email,
+      role: validUser.role,
+    };
+
+    // Sign the token with the payload
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Set the token as a cookie and include user details in the response
+    res
+      .cookie('access_token', token, { httpOnly: true })
+      .status(200)
+      .json({
+        id: validUser._id,
+        userName: validUser.userName,
+        email: validUser.email,
+        role: validUser.role,
+      });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
 // Controller to get all users
