@@ -1,0 +1,29 @@
+/* Your existing CSS */
+
+/* Add the following styles for the header */
+.navbar {
+    background: linear-gradient(135deg, #3498db, #e74c3c); /* Replace with your preferred gradient colors */
+    border-bottom-left-radius: 20px; /* Adjust the curve radius as needed */
+    border-bottom-right-radius: 20px; /* Adjust the curve radius as needed */
+  }
+  
+  /* Add styles for the logo */
+  .logo {
+    max-height: 40px; /* Adjust the max height as needed */
+    display: block;
+    margin: 0 auto; /* Center the logo horizontally */
+    transition: transform 0.3s ease; /* Add transition effect for scaling */
+  }
+  
+  /* Add hover effects for the logo */
+  .logo:hover {
+    transform: scale(1.1); /* Scale the logo on hover */
+  }
+  
+  /* Adjust margin between "Sign In" and "Sign Up" on larger screens */
+  @media (min-width: 768px) {
+    .navbar-nav.ml-auto .text-dark {
+      margin-right: 10px; /* Adjust the margin as needed */
+    }
+  }
+  
