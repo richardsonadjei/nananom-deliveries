@@ -107,14 +107,14 @@ export const updateProfile = async (req, res, next) => {
 
   try {
     // Authentication check
-    if (!req.user || req.user.id !== userId) {
-      return next(errorHandler(401, 'You can only update your own account!'));
+    if (req.user.id !== userId) {
+      return res.status(401).json({ success: false, statusCode: 401, message: 'You can only update your own account!' });
     }
 
     // Check if the user exists
     const user = await User.findById(userId);
     if (!user) {
-      return next(errorHandler(404, 'User not found!'));
+      return res.status(404).json({ success: false, statusCode: 404, message: 'User not found!' });
     }
 
     // Update userName and email fields
@@ -123,8 +123,7 @@ export const updateProfile = async (req, res, next) => {
 
     // Update password if provided
     if (password && newPassword !== confirmPassword) {
-      
-      return res.status(400).json({ error: "New password and confirm password don't match." });
+      return res.status(400).json({ success: false, statusCode: 400, message: "New password and confirm password don't match." });
     }
 
     if (newPassword) {
@@ -139,11 +138,16 @@ export const updateProfile = async (req, res, next) => {
 
     // Respond with the updated user (excluding sensitive information)
     const { password: userPassword, ...rest } = user._doc;
-    res.status(200).json(rest);
+    res.status(200).json({ success: true, statusCode: 200, ...rest });
   } catch (error) {
     next(error);
   }
 };
+
+
+
+
+
 
 // auth.controller.js
 export const signout = (req, res) => {

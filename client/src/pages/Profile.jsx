@@ -14,21 +14,18 @@ const Profile = () => {
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       dispatch(updateUserStart());
-  
+
       if (newPassword !== confirmPassword) {
-        console.error("New password and confirm password don't match.");
+        dispatch(updateUserFailure("New password and confirm password don't match."));
         return;
       }
-  
-      console.log('Password:', password);
-      console.log('New Password:', newPassword);
-      console.log('Confirm New Password:', confirmPassword);
-  
+
       const response = await fetch(`/api/auth/update/${currentUser.id}`, {
         method: 'PUT',
         headers: {
@@ -36,24 +33,36 @@ const Profile = () => {
         },
         body: JSON.stringify({ userName, email, password, newPassword, confirmPassword }),
       });
-  
-      console.log('Raw response:', response);
-  
+
       if (response.ok) {
-        const updatedUser = await response.json();
-        dispatch(updateUserSuccess(updatedUser));
-        console.log('User profile updated:', updatedUser);
+        const responseData = await response.json();
+        setSuccessMessage(responseData.message);
+
+        // Sign out the user
+        const signOutResponse = await fetch('/api/auth/signout', {
+          method: 'POST',
+          credentials: 'include',
+        });
+
+        if (signOutResponse.ok) {
+          // Clear user state and navigate to sign-in page after 3 seconds
+          setTimeout(() => {
+            dispatch(updateUserSuccess(null));
+            window.location.href = '/sign-in';
+          }, 3000);
+        } else {
+          const errorData = await signOutResponse.json();
+          dispatch(updateUserFailure(errorData.message));
+        }
       } else {
         const errorData = await response.json();
         dispatch(updateUserFailure(errorData.message));
-        console.error('Error updating user profile:', errorData);
       }
     } catch (error) {
       dispatch(updateUserFailure(error.message));
-      console.error('Error updating user profile:', error);
     }
-  };
-  
+  }
+
 
   const handleSignOut = async () => {
     try {
@@ -67,16 +76,20 @@ const Profile = () => {
         window.location.href = '/sign-in';
       } else {
         const errorData = await response.json();
-        console.error('Error signing out:', errorData);
+        dispatch(updateUserFailure(errorData.message));
       }
     } catch (error) {
-      console.error('Error signing out:', error);
+      dispatch(updateUserFailure(error.message));
     }
   };
-
   return (
     <div className="container mt-5">
       <h1 className="text-center mb-4">User Profile</h1>
+      {successMessage && (
+            <div className="alert alert-success" role="alert">
+              {successMessage}
+            </div>
+          )}
       <div className="row justify-content-center">
         <div className="col-md-6">
           <form onSubmit={handleSubmit}>

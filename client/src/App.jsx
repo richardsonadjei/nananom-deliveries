@@ -24,7 +24,6 @@ export default function App() {
       <Routes>
         
         <Route path='/sign-in' element={<SignIn />} />
-        <Route path='/sign-up' element={<SignUp />} />
         <Route path='/sign-out' element={<SignOut />} />
         <Route element={<PrivateRoute/>}>
           <Route path='/profile' element={<Profile />} />
@@ -37,6 +36,7 @@ export default function App() {
           <Route path='/maintenance-reports' element={<MaintenanceReport/>} />
           <Route path='/other-expense-reports' element={<OtherExpenseReport/>} />
           <Route path='/profit-loss-reports' element={<ProfitLossReport/>} />
+          <Route path='/sign-up' element={<SignUp />} />
         </Route>
       </Routes>
     </BrowserRouter>
