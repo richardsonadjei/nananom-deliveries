@@ -1,104 +1,102 @@
 import React, { useState } from 'react';
-import { Button, Form, FormGroup, Label, Input, Container, Row, Col, Alert } from 'reactstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 const SignIn = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const loading = useSelector((state) => state.user.loading);
+  const error = useSelector((state) => state.user.error);
+
   const [formData, setFormData] = useState({
     userNameOrEmail: '',
     password: '',
   });
 
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState(''); // Add this line
-
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      // Fetch logic here (replace with your actual API endpoint)
-      const response = await fetch('/api/auth/signin', {
+      dispatch(signInStart());
+      const res = await fetch('/api/auth/signin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-
-      if (response.ok) {
-        // Success case
-        const data = await response.json();
-        // Display success alert for 3 seconds
-        setError('');
-        setSuccessMessage('User signed in successfully!');
-        setTimeout(() => {
-          setSuccessMessage('');
-          // Redirect to / after successful sign-in
-          window.location.href = '/';
-        }, 3000);
-      } else {
-        // Error case
-        const data = await response.json();
-        setError(data.error || 'An error occurred. Please try again.');
-        // Clear input fields after 3 seconds and refresh the page
-        setTimeout(() => {
-          setError('');
-          setFormData({
-            userNameOrEmail: '',
-            password: '',
-          });
-          window.location.reload();
-        }, 3000);
+      const data = await res.json();
+      console.log(data);
+      if (data.success === false) {
+        dispatch(signInFailure(data.message));
+        return;
       }
+      dispatch(signInSuccess(data));
+      navigate('/');
     } catch (error) {
-      console.error('Error:', error);
-      setError('An unexpected error occurred. Please try again.');
+      dispatch(signInFailure(error.message));
     }
   };
 
   return (
-    <Container className="mt-5">
-      <Row className="justify-content-center">
-        <Col md={8} lg={6}>
-          <Form onSubmit={handleSubmit} className="form-signin">
-            <h2 className="text-center mb-4">Sign In</h2>
+    <div className="container mt-5">
+      <h2 className="mb-4">Sign In</h2>
+      <form onSubmit={handleSubmit}>
+        {/* UserName or Email */}
+        <div className="mb-3">
+          <label htmlFor="userNameOrEmail" className="form-label">
+            UserName or Email
+          </label>
+          <input
+            type="text"
+            className="form-control"
+            id="userNameOrEmail"
+            name="userNameOrEmail"
+            value={formData.userNameOrEmail}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-            {error && <Alert color="danger">{error}</Alert>}
-            {successMessage && <Alert color="success">{successMessage}</Alert>} {/* Add this line */}
+        {/* Password */}
+        <div className="mb-3">
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
+          <input
+            type="password"
+            className="form-control"
+            id="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-            <FormGroup>
-              <Label for="userNameOrEmail">Username or Email</Label>
-              <Input
-                type="text"
-                name="userNameOrEmail"
-                id="userNameOrEmail"
-                value={formData.userNameOrEmail}
-                onChange={handleChange}
-                required
-              />
-            </FormGroup>
+        {/* Submit button */}
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? 'Signing In...' : 'Sign In'}
+        </button>
 
-            <FormGroup>
-              <Label for="password">Password</Label>
-              <Input
-                type="password"
-                name="password"
-                id="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-              />
-            </FormGroup>
+        {/* Error message */}
+        {error && <div className="text-danger mt-3">{error}</div>}
 
-            <Button type="submit" color="primary" className="mt-4">
-              Sign In
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+        {/* Paragraph with SignUp link */}
+        <p className="mt-3">
+          Don't have an account? <Link to="/sign-up">Sign Up</Link>
+        </p>
+      </form>
+    </div>
   );
 };
 

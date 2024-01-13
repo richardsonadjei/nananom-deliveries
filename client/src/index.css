@@ -2,31 +2,42 @@
 
 /* Add the following styles for the header */
 .navbar {
-    background: linear-gradient(135deg, #3498db, #e74c3c); /* Replace with your preferred gradient colors */
-    border-bottom-left-radius: 20px; /* Adjust the curve radius as needed */
-    border-bottom-right-radius: 20px; /* Adjust the curve radius as needed */
+  background: linear-gradient(135deg, #3498db, #e74c3c); /* Replace with your preferred gradient colors */
+  border-bottom-left-radius: 20px; /* Adjust the curve radius as needed */
+  border-bottom-right-radius: 20px; /* Adjust the curve radius as needed */
+}
+
+/* Add styles for the logo */
+.logo {
+  max-height: 40px; /* Adjust the max height as needed */
+  display: block;
+  margin: 0 auto; /* Center the logo horizontally */
+  transition: transform 0.3s ease; /* Add transition effect for scaling */
+}
+
+/* Add hover effects for the logo */
+.logo:hover {
+  transform: scale(1.1); /* Scale the logo on hover */
+}
+
+/* Adjust margin between "Sign In" and "Sign Up" on larger screens */
+@media (min-width: 768px) {
+  .navbar-nav.ml-auto .text-dark {
+    margin-right: 10px; /* Adjust the margin as needed */
   }
-  
-  /* Add styles for the logo */
-  .logo {
-    max-height: 40px; /* Adjust the max height as needed */
-    display: block;
-    margin: 0 auto; /* Center the logo horizontally */
-    transition: transform 0.3s ease; /* Add transition effect for scaling */
-  }
-  
-  /* Add hover effects for the logo */
-  .logo:hover {
-    transform: scale(1.1); /* Scale the logo on hover */
-  }
-  
-  /* Adjust margin between "Sign In" and "Sign Up" on larger screens */
-  @media (min-width: 768px) {
-    .navbar-nav.ml-auto .text-dark {
-      margin-right: 10px; /* Adjust the margin as needed */
-    }
-  }
-  
+}
+
+/* Add styles for navigation links */
+.navbar-nav.ml-auto .text-dark {
+  padding: 0.5rem 1rem; /* Add padding to the navigation links */
+}
+
+/* Add styles for active navigation link */
+.navbar-nav .nav-item.active .text-dark {
+  font-weight: bold; /* Example: Set a bold font for the active link */
+  color: #fff; /* Example: Set a different color for the active link */
+}
+
 
 /* SIGN-UP */
   .form-signup {
@@ -38,3 +49,51 @@
   
   /* Add any additional styling as needed */
   
+/* Home.css */
+/* Home.css */
+.home-container {
+  background-image: url('../public/bg.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+.animated-card {
+  transition: transform 0.3s ease-in-out;
+}
+
+.animated-card:hover {
+  transform: scale(1.05);
+}
+
+.icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease-in-out;
+}
+
+.icon:hover {
+  transform: rotate(360deg);
+}
+
+/* Card Designs */
+.link-card {
+  text-decoration: none;
+}
+
+.card-sales {
+  background: linear-gradient(to right, #3498db, #2c3e50);
+  color: white;
+}
+
+.card-expense {
+  background: red;
+  color: white;
+}
+
+.card-report {
+  background: linear-gradient(to right, #f39c12, #e67e22);
+  color: white;
+}

@@ -1,5 +1,6 @@
 import User from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';
+import { errorHandler } from '../utils/error.js';
 
 import jwt from 'jsonwebtoken';
 
@@ -96,51 +97,55 @@ export const signin = async (req, res, next) => {
 };
 
 
-// Controller to get all users
-export const getAllUsers = async (req, res) => {
+export const updateProfile = async (req, res, next) => {
+  const userId = req.params.id;
+  const { userName, email, password, newPassword, confirmPassword } = req.body;
+
   try {
-    const users = await User.find();
-    res.status(200).json(users);
+    // Authentication check
+    if (!req.user || req.user.id !== userId) {
+      return next(errorHandler(401, 'You can only update your own account!'));
+    }
+
+    // Check if the user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(errorHandler(404, 'User not found!'));
+    }
+
+    // Update userName and email fields
+    user.userName = userName;
+    user.email = email;
+
+    // Update password if provided
+    if (password && newPassword !== confirmPassword) {
+      
+      return res.status(400).json({ error: "New password and confirm password don't match." });
+    }
+
+    if (newPassword) {
+      // Hash the new password before saving
+      const saltRounds = 10;
+      const hashedPassword = await bcryptjs.hash(newPassword, saltRounds);
+      user.password = hashedPassword;
+    }
+
+    // Save the updated user
+    await user.save();
+
+    // Respond with the updated user (excluding sensitive information)
+    const { password: userPassword, ...rest } = user._doc;
+    res.status(200).json(rest);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-// Controller to get a single user by ID
-export const getUserById = async (req, res) => {
-  try {
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Controller to update a user by ID
-export const updateUserById = async (req, res) => {
-  try {
-    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Controller to delete a user by ID
-export const deleteUserById = async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-    res.status(200).json({ message: 'User deleted successfully' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+// auth.controller.js
+export const signout = (req, res) => {
+  // Clear the token cookie to sign the user out
+  res.clearCookie('access_token', { httpOnly: true });
+  
+  // Send a response indicating successful sign out
+  res.status(200).json({ success: true, message: 'User signed out successfully!' });
 };

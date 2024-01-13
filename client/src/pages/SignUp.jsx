@@ -45,7 +45,7 @@ const SignUp = () => {
         setTimeout(() => {
           setSuccessMessage('');
           // Navigate to / after 3 seconds
-          window.location.href = '/signin';
+          window.location.href = '/sign-in';
         }, 3000);
       } else {
         // Error case
