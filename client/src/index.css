@@ -97,3 +97,40 @@
   background: linear-gradient(to right, #f39c12, #e67e22);
   color: white;
 }
+
+
+.custom-navbar {
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
+.current-date-time {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Additional styles for nav items */
+.nav-link {
+  font-weight: bold;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .current-date-time {
+    text-align: center;
+    margin-bottom: 10px;
+    display: block; /* Display on smaller screens outside the hamburger menu */
+  }
+
+  .navbar-toggler {
+    order: -1; /* Move the hamburger menu to the left on smaller screens */
+  }
+
+   /* Add margin between cards on smaller screens */
+   .card {
+    margin-bottom: 10px;
+  }
+}

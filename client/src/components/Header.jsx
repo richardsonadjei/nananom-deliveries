@@ -1,14 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { FaSearch } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+
 export default function Header() {
   const { currentUser } = useSelector((state) => state.user);
+  const [currentDateTime, setCurrentDateTime] = useState(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentDateTime(new Date());
+    }, 60000); // Update every minute (60,000 milliseconds)
+
+    return () => clearInterval(intervalId); // Cleanup on component unmount
+  }, []);
 
   return (
-    <Navbar bg="light" expand="lg">
+    <Navbar bg="light" expand="lg" className="custom-navbar">
       <Container>
         <Link to="/">
           <Navbar.Brand>
@@ -20,12 +30,17 @@ export default function Header() {
           </Navbar.Brand>
         </Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
+        {/* Date and time at the center of the vw */}
+        <div className="current-date-time">{currentDateTime.toLocaleString()}</div>
+
         <Navbar.Collapse id="basic-navbar-nav" className="ml-auto">
           <Nav className="mr-auto">
             <Nav.Link as={Link} to="/" className="text-dark">
               Home
             </Nav.Link>
           </Nav>
+
           <Nav>
             {currentUser ? (
               <>
@@ -55,6 +70,7 @@ export default function Header() {
               </>
             )}
           </Nav>
+
           <Nav>
             <Nav.Link as={Link} to="/profile" className="text-dark">
               Profile
