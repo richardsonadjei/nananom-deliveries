@@ -55,7 +55,7 @@ const ProfitLossReport = () => {
       }
 
       // Fetch daily sales data
-      const dailySalesResponse = await fetch(`/api/all-sales?startDate=${startDate}&endDate=${endDate}`);
+      const dailySalesResponse = await fetch(`/api/daily-sales?startDate=${startDate}&endDate=${endDate}`);
       const dailySales = await dailySalesResponse.json();
 
       if (dailySalesResponse.ok) {
