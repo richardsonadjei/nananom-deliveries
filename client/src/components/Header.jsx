@@ -36,7 +36,7 @@ export default function Header() {
 
         <Navbar.Collapse id="basic-navbar-nav" className="ml-auto">
           <Nav className="mr-auto">
-            <Nav.Link as={Link} to="/" className="text-dark">
+            <Nav.Link as={Link} to="/"  className="text-white">
               Home
             </Nav.Link>
           </Nav>
@@ -44,21 +44,22 @@ export default function Header() {
           <Nav>
             {currentUser ? (
               <>
-                <Nav.Link as={Link} to="/profile" className="text-dark">
-                  {currentUser.userName}
-                </Nav.Link>
-                <Nav.Link as={Link} to="/sign-out" className="text-dark">
+               <Nav.Link as={Link} to="/profile"  className="text-white">
+  <span>{currentUser.userName}</span>
+</Nav.Link>
+
+                <Nav.Link as={Link} to="/sign-out"  className="text-white">
                   Sign Out
                 </Nav.Link>
                 {currentUser.role === 'ceo' && (
-                  <Nav.Link as={Link} to="/sign-up" className="text-dark">
+                  <Nav.Link as={Link} to="/sign-up"  className="text-white">
                     Create New User
                   </Nav.Link>
                 )}
               </>
             ) : (
               <>
-                <Nav.Link as={Link} to="/sign-in" className="text-dark">
+                <Nav.Link as={Link} to="/sign-in"  className="text-white">
                   Sign In
                 </Nav.Link>
                 {/* Show "Sign Up" only if the role is not "employee" or "manager" */}
@@ -69,12 +70,6 @@ export default function Header() {
                 )}
               </>
             )}
-          </Nav>
-
-          <Nav>
-            <Nav.Link as={Link} to="/profile" className="text-dark">
-              Profile
-            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

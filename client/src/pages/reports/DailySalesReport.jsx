@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Form, FormGroup, Label, Input, Container, Row, Col, Table } from 'reactstrap';
 
-const FuelReport = () => {
+const DailySalesReport = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [reportData, setReportData] = useState([]);
@@ -11,7 +11,7 @@ const FuelReport = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`/api/fuel-expenditures?startDate=${startDate}&endDate=${endDate}`);
+      const response = await fetch(`/api/daily-sales?startDate=${startDate}&endDate=${endDate}`);
       const data = await response.json();
 
       if (response.ok) {
@@ -25,8 +25,8 @@ const FuelReport = () => {
     }
   };
 
-  // Calculate the total amount
-  const totalAmount = reportData.reduce((total, item) => total + item.amount, 0);
+  // Calculate the total sales amount
+  const totalSalesAmount = reportData.reduce((total, item) => total + item.salesAmount, 0);
 
   return (
     <Container>
@@ -68,27 +68,27 @@ const FuelReport = () => {
 
       {showReport && (
         <>
-          <h2 className="mt-4 mb-3">Fuel Expenditure Report</h2>
+          <h2 className="mt-4 mb-3">Daily Sales Report</h2>
           <Table responsive className="table-shadow">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Date</th>
-                <th>Fuel Purchase Number</th>
-                <th>Amount</th>
+                <th>Sales Number</th>
+                <th>Sales Amount</th>
                 <th>Description</th>
-                <th>Purchased By</th>
+                <th>Recorded By</th>
               </tr>
             </thead>
             <tbody>
               {reportData.map((item, index) => (
-                <tr key={item.id}>
+                <tr key={item._id}>
                   <td>{index + 1}</td>
                   <td>{new Date(item.date).toLocaleDateString('en-GB')}</td>
-                  <td>{item.fuelPurchaseNumber}</td>
-                  <td>{item.amount}</td>
+                  <td>{item.salesNumber}</td>
+                  <td>{item.salesAmount}</td>
                   <td>{item.description}</td>
-                  <td>{item.purchasedBy}</td>
+                  <td>{item.recordedBy}</td>
                 </tr>
               ))}
             </tbody>
@@ -99,12 +99,12 @@ const FuelReport = () => {
           <Table responsive className="table-shadow">
             <thead>
               <tr>
-                <th>Total Amount</th>
+                <th>Total Sales Amount</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>{totalAmount}</td>
+                <td>{totalSalesAmount}</td>
               </tr>
             </tbody>
           </Table>
@@ -114,4 +114,4 @@ const FuelReport = () => {
   );
 };
 
-export default FuelReport;
+export default DailySalesReport;

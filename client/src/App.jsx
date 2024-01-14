@@ -15,6 +15,7 @@ import FuelReport from './pages/reports/FuelReport';
 import MaintenanceReport from './pages/reports/MaintenanceReport';
 import OtherExpenseReport from './pages/reports/OtherExpenseReport';
 import ProfitLossReport from './pages/reports/ProfitLossReport';
+import DailySalesReport from './pages/reports/DailySalesReport';
 
 export default function App() {
 
@@ -26,6 +27,7 @@ export default function App() {
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-out' element={<SignOut />} />
         <Route element={<PrivateRoute/>}>
+          <Route path='/sign-up' element={<SignUp />} />
           <Route path='/profile' element={<Profile />} />
           <Route path='/' element={<Home/>} />
           <Route path='/record-daily-sales' element={<RecordSales/>} />
@@ -36,7 +38,9 @@ export default function App() {
           <Route path='/maintenance-reports' element={<MaintenanceReport/>} />
           <Route path='/other-expense-reports' element={<OtherExpenseReport/>} />
           <Route path='/profit-loss-reports' element={<ProfitLossReport/>} />
-          <Route path='/sign-up' element={<SignUp />} />
+          <Route path='/daily-sales-report' element={<DailySalesReport/>} />
+         
+       
         </Route>
       </Routes>
     </BrowserRouter>

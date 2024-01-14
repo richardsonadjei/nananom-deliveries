@@ -138,11 +138,11 @@ const ProfitLossReport = () => {
             <thead>
               <tr>
                 <th>#</th>
+                <th>Date</th>
                 <th>Fuel Purchase Number</th>
                 <th>Amount</th>
-                <th>Date</th>
-                <th>Purchased By</th>
                 <th>Description</th>
+                <th>Purchased By</th>
               </tr>
             </thead>
             {/* Table body */}
@@ -150,11 +150,11 @@ const ProfitLossReport = () => {
               {fuelExpenditureData.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
+                  <td>{new Date(item.date).toLocaleDateString('en-GB')}</td>
                   <td>{item.fuelPurchaseNumber}</td>
                   <td>{item.amount}</td>
-                  <td>{new Date(item.date).toLocaleDateString()}</td>
-                  <td>{item.purchasedBy}</td>
                   <td>{item.description}</td>
+                  <td>{item.purchasedBy}</td>
                 </tr>
               ))}
             </tbody>
@@ -167,11 +167,11 @@ const ProfitLossReport = () => {
             <thead>
               <tr>
                 <th>#</th>
+                <th>Date</th>
                 <th>Maintenance Expense Number</th>
                 <th>Amount</th>
-                <th>Date</th>
-                <th>Purchased By</th>
                 <th>Description</th>
+                <th>Purchased By</th>
               </tr>
             </thead>
             {/* Table body */}
@@ -179,11 +179,11 @@ const ProfitLossReport = () => {
               {maintenanceExpenseData.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
+                  <td>{new Date(item.date).toLocaleDateString('en-GB')}</td>
                   <td>{item.maintenanceExpenseNumber}</td>
                   <td>{item.amount}</td>
-                  <td>{new Date(item.date).toLocaleDateString()}</td>
-                  <td>{item.purchasedBy}</td>
                   <td>{item.description}</td>
+                  <td>{item.purchasedBy}</td>
                 </tr>
               ))}
             </tbody>
@@ -196,11 +196,11 @@ const ProfitLossReport = () => {
             <thead>
               <tr>
                 <th>#</th>
+                <th>Date</th>
                 <th>Other Expense Number</th>
                 <th>Amount</th>
-                <th>Date</th>
-                <th>Purchased By</th>
                 <th>Description</th>
+                <th>Purchased By</th>
               </tr>
             </thead>
             {/* Table body */}
@@ -208,11 +208,11 @@ const ProfitLossReport = () => {
               {otherExpenseData.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
+                  <td>{new Date(item.date).toLocaleDateString('en-GB')}</td>
                   <td>{item.otherExpenseNumber}</td>
                   <td>{item.amount}</td>
-                  <td>{new Date(item.date).toLocaleDateString()}</td>
-                  <td>{item.purchasedBy}</td>
                   <td>{item.description}</td>
+                  <td>{item.purchasedBy}</td>
                 </tr>
               ))}
             </tbody>
@@ -225,11 +225,11 @@ const ProfitLossReport = () => {
             <thead>
               <tr>
                 <th>#</th>
+                <th>Date</th>
                 <th>Sales Number</th>
                 <th>Sales Amount</th>
-                <th>Date</th>
-                <th>Recorded By</th>
                 <th>Description</th>
+                <th>Recorded By</th>
               </tr>
             </thead>
             {/* Table body */}
@@ -237,11 +237,11 @@ const ProfitLossReport = () => {
               {dailySalesData.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
+                  <td>{new Date(item.date).toLocaleDateString('en-GB')}</td>
                   <td>{item.salesNumber}</td>
                   <td>{item.salesAmount}</td>
-                  <td>{new Date(item.date).toLocaleDateString()}</td>
-                  <td>{item.recordedBy}</td>
                   <td>{item.description}</td>
+                  <td>{item.recordedBy}</td>
                 </tr>
               ))}
             </tbody>

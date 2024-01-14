@@ -94,9 +94,10 @@
 }
 
 .card-report {
-  background: linear-gradient(to right, #f39c12, #e67e22);
+  background: linear-gradient(to right, #1abc9c, #16a085);
   color: white;
 }
+
 
 
 .custom-navbar {
@@ -133,4 +134,117 @@
    .card {
     margin-bottom: 10px;
   }
+}
+
+
+
+
+/* USERNAME CSS */
+/* Add this CSS to your stylesheets */
+.custom-navbar {
+  /* Add any custom styles for the Navbar here */
+}
+
+.current-date-time {
+  /* Add styles for the date and time at the center of the vw */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #333; /* Customize the color */
+}
+
+.text-dark {
+  /* Add styles for the text-dark class */
+  color: #333; /* Customize the default text color */
+  transition: color 0.3s ease; /* Add a smooth color transition effect */
+}
+
+.text-dark:hover {
+  /* Add styles for the text-dark class on hover */
+  color: #007bff; /* Customize the text color on hover */
+}
+
+/* Add animations for userName */
+.text-dark span {
+  display: inline-block;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.text-dark:hover span {
+  /* Add translations and color changes on hover */
+  transform: translateY(-3px); /* Customize the translation effect */
+  color: #28a745; /* Customize the text color on hover */
+}
+
+/* Add this CSS to your stylesheets */
+.current-date-time {
+  /* Add styles for the date and time at the center of the vw */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: greenyellow; /* Customize the text color */
+  transition: color 0.5s ease; /* Add a smooth color transition effect */
+  animation: fadeInOut 2s infinite alternate; /* Add a simple fade-in and fade-out animation */
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* FUEL FORM CONTAINER */
+/* Add this CSS to your stylesheets */
+.buy-fuel-container {
+  background-image: url('../public//fuel\ station.png'); /* Replace with the actual path to your image */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+/* Add this CSS to your stylesheets */
+.buy-fuel-container h2,
+.buy-fuel-container label {
+  font-size: 1.5rem; /* Adjust the font size as needed */
+  font-weight: bold; /* Make the text bold */
+}
+
+/* Add additional styling as needed */
+
+
+/* Add this CSS to your stylesheets or create a new CSS file */
+.profile-container {
+  background: linear-gradient(135deg, #16a085, #3498db);/* Replace with your preferred gradient colors */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: #fff; /* Set text color to white or your preferred color */
+}
+
+.form-label {
+  color: #fff; /* Set label text color to white or your preferred color */
+}
+
+.btn-primary {
+  background: linear-gradient(to right, #3498db, #e74c3c); /* Replace with your preferred gradient colors */
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(to right, #2c3e50, #c0392b); /* Adjust hover colors as needed */
+}
+
+.btn-secondary {
+  background: #fff; /* Set background color to white or your preferred color */
+  color: #3498db; /* Set text color to your primary color */
+  border: none;
+}
+
+.btn-secondary:hover {
+  background: #eee; /* Adjust hover colors as needed */
 }

@@ -62,64 +62,66 @@ const BuyFuel = () => {
   };
 
   return (
-    <Container>
-      <Row>
-        <Col sm="6" className="mx-auto mt-5">
-          <h2 className="mb-4 text-center">Buy Fuel Form</h2>
-          <Form onSubmit={handleSubmit}>
-            <FormGroup>
-              <Label for="amount">Amount</Label>
-              <Input
-                type="number"
-                name="amount"
-                id="amount"
-                placeholder="Enter Amount"
-                value={formData.amount}
-                onChange={handleInputChange}
-              />
-            </FormGroup>
+    <div className="buy-fuel-container">
+        <Container>
+          <Row>
+            <Col sm="6" className="mx-auto mt-5">
+              
+              <Form onSubmit={handleSubmit}>
+                <FormGroup>
+                  <Label for="amount">Amount</Label>
+                  <Input
+                    type="number"
+                    name="amount"
+                    id="amount"
+                    placeholder="Enter Amount"
+                    value={formData.amount}
+                    onChange={handleInputChange}
+                  />
+                </FormGroup>
 
-            <FormGroup>
-              <Label for="date">Date</Label>
-              <Input
-                type="date"
-                name="date"
-                id="date"
-                value={formData.date}
-                onChange={handleInputChange}
-              />
-            </FormGroup>
+                <FormGroup>
+                  <Label for="date">Date</Label>
+                  <Input
+                    type="date"
+                    name="date"
+                    id="date"
+                    value={formData.date}
+                    onChange={handleInputChange}
+                  />
+                </FormGroup>
 
-            <FormGroup>
-              <Label for="purchasedBy">Purchased By</Label>
-              <Input
-                type="text"
-                name="purchasedBy"
-                id="purchasedBy"
-                value={formData.purchasedBy}
-                readOnly
-              />
-            </FormGroup>
+                <FormGroup>
+                  <Label for="purchasedBy">Purchased By</Label>
+                  <Input
+                    type="text"
+                    name="purchasedBy"
+                    id="purchasedBy"
+                    value={formData.purchasedBy}
+                    readOnly
+                  />
+                </FormGroup>
 
-            {successMessage && (
-              <Alert color="success" className="mt-3">
-                {successMessage}
-              </Alert>
-            )}
+                {successMessage && (
+                  <Alert color="success" className="mt-3">
+                    {successMessage}
+                  </Alert>
+                )}
 
-            {errorMessage && (
-              <Alert color="danger" className="mt-3">
-                {errorMessage}
-              </Alert>
-            )}
+                {errorMessage && (
+                  <Alert color="danger" className="mt-3">
+                    {errorMessage}
+                  </Alert>
+                )}
 
-            <Button color="primary" type="submit">
-              Buy Fuel
-            </Button>
-          </Form>
-        </Col>
-      </Row>
-    </Container>
+                <Button color="primary" type="submit">
+                  Buy Fuel
+                </Button>
+              </Form>
+            </Col>
+          </Row>
+        </Container>
+    </div>
   );
 };
 

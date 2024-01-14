@@ -83,7 +83,7 @@ const Profile = () => {
     }
   };
   return (
-    <div className="container mt-5">
+    <div className="profile-container mt-5">
       <h1 className="text-center mb-4">User Profile</h1>
       {successMessage && (
             <div className="alert alert-success" role="alert">

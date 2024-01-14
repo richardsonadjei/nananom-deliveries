@@ -73,22 +73,22 @@ const MaintenanceReport = () => {
             <thead>
               <tr>
                 <th>#</th>
+                <th>Date</th>
                 <th>Maintenance Expense Number</th>
                 <th>Amount</th>
-                <th>Date</th>
-                <th>Purchased By</th>
                 <th>Description</th>
+                <th>Purchased By</th>
               </tr>
             </thead>
             <tbody>
               {reportData.map((item, index) => (
                 <tr key={item.id}>
                   <td>{index + 1}</td>
+                  <td>{new Date(item.date).toLocaleDateString('en-GB')}</td>
                   <td>{item.maintenanceExpenseNumber}</td>
                   <td>{item.amount}</td>
-                  <td>{new Date(item.date).toLocaleDateString()}</td>
-                  <td>{item.purchasedBy}</td>
                   <td>{item.description}</td>
+                  <td>{item.purchasedBy}</td>
                 </tr>
               ))}
             </tbody>

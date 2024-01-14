@@ -14,7 +14,7 @@ const router = express.Router();
 router.post('/create-sales', createDailySale);
 
 // Get all daily sales
-router.get('/all-sales', getAllDailySales);
+router.get('/daily-sales', getAllDailySales);
 
 // Get a specific daily sale by ID
 router.get('/sales:id', getDailySaleById);

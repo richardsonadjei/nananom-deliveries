@@ -3,6 +3,11 @@ import { Card, Container, Row, Col, Button } from 'react-bootstrap';
 import { BsCreditCard, BsFileText } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { FaDollarSign } from 'react-icons/fa';
+import { FaGasPump, FaWrench, FaExclamationTriangle, FaChartLine } from 'react-icons/fa';
+
+
+
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -16,72 +21,76 @@ const Home = () => {
     <div className="home-container">
       <Container>
         <Row>
-          <Col md={4}>
-            <Link to="/record-daily-sales">
-              <Card className="animated-card card-sales">
-                <Card.Body>
-                  <BsCreditCard className="icon" />
-                  <Card.Title>Daily Sales</Card.Title>
-                </Card.Body>
-              </Card>
-            </Link>
-          </Col>
+        <Col md={4}>
+  <Link to="/record-daily-sales">
+    <Card className="animated-card card-sales">
+      <Card.Body>
+        <FaDollarSign className="icon" style={{ color: '#4CAF50' }} />
+        <Card.Title style={{ textDecoration: 'none' }}>Daily Sales</Card.Title>
+      </Card.Body>
+    </Card>
+  </Link>
+</Col>
+
+
           {(currentUser?.role === 'manager' || currentUser?.role === 'ceo') && (
             <>
-              <Col md={4}>
-                <Card className="animated-card card-expense">
+             <Col md={4}>
+  <Card className="animated-card card-expense">
+    <Card.Body>
+      <BsCreditCard className="icon" />
+      <Card.Title>Expense</Card.Title>
+      <Button variant="primary" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/buy-fuel')}>
+        <FaGasPump className="button-icon" /> Fuel
+      </Button>
+      <Button
+        variant="success"
+        className="expense-button me-2 mt-2"
+        onClick={() => handleButtonClick('/record-maintenance')}
+      >
+        <FaWrench className="button-icon" /> Maintenance
+      </Button>
+      <Button variant="warning" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/record-other-expense')}>
+        <FaExclamationTriangle className="button-icon" /> Other Expense
+      </Button>
+    </Card.Body>
+  </Card>
+</Col>
+
+              {currentUser?.role === 'ceo' && (
+                <Col md={4}>
+                <Card className="animated-card card-report">
                   <Card.Body>
-                    <BsCreditCard className="icon" />
-                    <Card.Title>Expense</Card.Title>
-                    <Button variant="primary" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/buy-fuel')}>
-                      Fuel
+                    <BsFileText className="icon" />
+                    <Card.Title>Report</Card.Title>
+              
+                    {/* Add Daily Sales Report Button */}
+                    <Button variant="primary" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/daily-sales-report')}>
+                      <FaDollarSign className="button-icon" /> Daily Sales Report
                     </Button>
-                    <Button
-                      variant="success"
-                      className="expense-button me-2 mt-2"
-                      onClick={() => handleButtonClick('/record-maintenance')}
-                    >
-                      Maintenance
+              
+                    {/* Fuel Report Button */}
+                    <Button variant="info" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/fuel-reports')}>
+                      <FaGasPump className="button-icon" /> Fuel Report
                     </Button>
-                    <Button variant="warning" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/record-other-expense')}>
-                      Other Expense
+              
+                    {/* Maintenance Report Button */}
+                    <Button variant="success" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/maintenance-reports')}>
+                      <FaWrench className="button-icon" /> Maintenance Report
+                    </Button>
+              
+                    {/* Other Expense Report Button */}
+                    <Button variant="warning" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/other-expense-reports')}>
+                      <FaDollarSign className="button-icon" /> Other Expense Report
+                    </Button>
+              
+                    {/* Profit and Loss Report Button */}
+                    <Button variant="danger" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/profit-loss-reports')}>
+                      <FaChartLine className="button-icon" /> Profit and Loss Report
                     </Button>
                   </Card.Body>
                 </Card>
               </Col>
-              {currentUser?.role === 'ceo' && (
-                <Col md={4}>
-                  <Card className="animated-card card-report">
-                    <Card.Body>
-                      <BsFileText className="icon" />
-                      <Card.Title>Report</Card.Title>
-                      <Button variant="info" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/fuel-reports')}>
-                        Fuel Report
-                      </Button>
-                      <Button
-                        variant="success"
-                        className="report-button me-2 mt-2"
-                        onClick={() => handleButtonClick('/maintenance-reports')}
-                      >
-                        Maintenance Report
-                      </Button>
-                      <Button
-                        variant="warning"
-                        className="report-button me-2 mt-2"
-                        onClick={() => handleButtonClick('/other-expense-reports')}
-                      >
-                        Other Expense Report
-                      </Button>
-                      <Button
-                        variant="danger"
-                        className="report-button me-2 mt-2"
-                        onClick={() => handleButtonClick('/profit-loss-reports')}
-                      >
-                        Profit and Loss Report
-                      </Button>
-                    </Card.Body>
-                  </Card>
-                </Col>
               )}
             </>
           )}
