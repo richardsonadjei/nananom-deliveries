@@ -65,7 +65,7 @@ const RecordSales = () => {
           <h2 className="mb-4 text-center">Record Sales</h2>
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label for="salesAmount">Sales Amount</Label>
+              <Label for="salesAmount" style={{ color: 'black', fontWeight: 'bold' }}>Sales Amount</Label>
               <Input
                 type="number"
                 name="salesAmount"
@@ -77,7 +77,7 @@ const RecordSales = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="date">Date</Label>
+              <Label for="date" style={{ color: 'black', fontWeight: 'bold' }}>Date</Label>
               <Input
                 type="date"
                 name="date"
@@ -88,7 +88,7 @@ const RecordSales = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="recordedBy">Recorded By</Label>
+              <Label for="recordedBy" style={{ color: 'black', fontWeight: 'bold' }}>Recorded By</Label>
               <Input
                 type="text"
                 name="recordedBy"

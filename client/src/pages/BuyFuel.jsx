@@ -69,7 +69,7 @@ const BuyFuel = () => {
               
               <Form onSubmit={handleSubmit}>
                 <FormGroup>
-                  <Label for="amount">Amount</Label>
+                  <Label for="amount" style={{ color: 'black', fontWeight: 'bold' }}>Amount</Label>
                   <Input
                     type="number"
                     name="amount"
@@ -81,7 +81,7 @@ const BuyFuel = () => {
                 </FormGroup>
 
                 <FormGroup>
-                  <Label for="date">Date</Label>
+                  <Label for="date" style={{ color: 'black', fontWeight: 'bold' }}>Date</Label>
                   <Input
                     type="date"
                     name="date"
@@ -92,7 +92,7 @@ const BuyFuel = () => {
                 </FormGroup>
 
                 <FormGroup>
-                  <Label for="purchasedBy">Purchased By</Label>
+                  <Label for="purchasedBy" style={{ color: 'black', fontWeight: 'bold' }}>Purchased By</Label>
                   <Input
                     type="text"
                     name="purchasedBy"

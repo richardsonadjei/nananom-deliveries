@@ -66,10 +66,21 @@ const RecordMaintenance = () => {
     <Container>
       <Row>
         <Col sm="6" className="mx-auto mt-5">
-          <h2 className="mb-4 text-center">Record Maintenance</h2>
+          <h2 className="mb-4 text-center">Record Maintenance Expenditure</h2>
+          {successMessage && (
+              <Alert color="success" className="mt-3">
+                {successMessage}
+              </Alert>
+            )}
+
+            {errorMessage && (
+              <Alert color="danger" className="mt-3">
+                {errorMessage}
+              </Alert>
+            )}
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label for="amount">Amount</Label>
+              <Label for="amount" style={{ color: 'black', fontWeight: 'bold' }}>Amount</Label>
               <Input
                 type="number"
                 name="amount"
@@ -81,7 +92,7 @@ const RecordMaintenance = () => {
             </FormGroup>
 
             <FormGroup>
-              <Label for="date">Date</Label>
+              <Label for="date" style={{ color: 'black', fontWeight: 'bold' }}>Date</Label>
               <Input
                 type="date"
                 name="date"
@@ -90,20 +101,8 @@ const RecordMaintenance = () => {
                 onChange={handleInputChange}
               />
             </FormGroup>
-
             <FormGroup>
-              <Label for="purchasedBy">Purchased By</Label>
-              <Input
-                type="text"
-                name="purchasedBy"
-                id="purchasedBy"
-                value={formData.purchasedBy}
-                readOnly
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label for="description">Description</Label>
+              <Label for="description" style={{ color: 'black', fontWeight: 'bold' }}>Description</Label>
               <Input
                 type="textarea"
                 name="description"
@@ -113,18 +112,17 @@ const RecordMaintenance = () => {
                 onChange={handleInputChange}
               />
             </FormGroup>
+            <FormGroup>
+              <Label for="purchasedBy" style={{ color: 'black', fontWeight: 'bold' }}>Purchased By</Label>
+              <Input
+                type="text"
+                name="purchasedBy"
+                id="purchasedBy"
+                value={formData.purchasedBy}
+                readOnly
+              />
+            </FormGroup>
 
-            {successMessage && (
-              <Alert color="success" className="mt-3">
-                {successMessage}
-              </Alert>
-            )}
-
-            {errorMessage && (
-              <Alert color="danger" className="mt-3">
-                {errorMessage}
-              </Alert>
-            )}
 
             <Button color="primary" type="submit">
               Record Maintenance
