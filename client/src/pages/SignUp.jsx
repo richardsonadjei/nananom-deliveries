@@ -77,13 +77,13 @@ const SignUp = () => {
             <Row>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="name">Name</Label>
+                  <Label for="name" style={{ color: 'black', fontWeight: 'bold' }}>Name</Label>
                   <Input type="text" name="name" id="name" value={formData.name} onChange={handleChange} required />
                 </FormGroup>
               </Col>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="userName">Username</Label>
+                  <Label for="userName" style={{ color: 'black', fontWeight: 'bold' }}>Username</Label>
                   <Input
                     type="text"
                     name="userName"
@@ -99,13 +99,13 @@ const SignUp = () => {
             <Row>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="email">Email</Label>
+                  <Label for="email" style={{ color: 'black', fontWeight: 'bold' }}>Email</Label>
                   <Input type="email" name="email" id="email" value={formData.email} onChange={handleChange} required />
                 </FormGroup>
               </Col>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="password">Password</Label>
+                  <Label for="password" style={{ color: 'black', fontWeight: 'bold' }}>Password</Label>
                   <Input
                     type="password"
                     name="password"
@@ -121,7 +121,7 @@ const SignUp = () => {
             <Row>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="confirmPassword">Confirm Password</Label>
+                  <Label for="confirmPassword" style={{ color: 'black', fontWeight: 'bold' }}>Confirm Password</Label>
                   <Input
                     type="password"
                     name="confirmPassword"
@@ -134,7 +134,7 @@ const SignUp = () => {
               </Col>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="telephoneNumber">Telephone Number</Label>
+                  <Label for="telephoneNumber" style={{ color: 'black', fontWeight: 'bold' }}>Telephone Number</Label>
                   <Input
                     type="tel"
                     name="telephoneNumber"
@@ -150,7 +150,7 @@ const SignUp = () => {
             <Row>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="ghanaCardNumber">Ghana Card Number</Label>
+                  <Label for="ghanaCardNumber" style={{ color: 'black', fontWeight: 'bold' }}>Ghana Card Number</Label>
                   <Input
                     type="text"
                     name="ghanaCardNumber"
@@ -163,7 +163,7 @@ const SignUp = () => {
               </Col>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="witnessName">Witness Name</Label>
+                  <Label for="witnessName" style={{ color: 'black', fontWeight: 'bold' }}>Witness Name</Label>
                   <Input
                     type="text"
                     name="witnessName"
@@ -179,7 +179,7 @@ const SignUp = () => {
             <Row>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="witnessContact">Witness Contact</Label>
+                  <Label for="witnessContact" style={{ color: 'black', fontWeight: 'bold' }}>Witness Contact</Label>
                   <Input
                     type="tel"
                     name="witnessContact"
@@ -192,7 +192,7 @@ const SignUp = () => {
               </Col>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="role">Role</Label>
+                  <Label for="role" style={{ color: 'black', fontWeight: 'bold' }}>Role</Label>
                   <Input type="select" name="role" id="role" value={formData.role} onChange={handleChange}>
                     <option value="employee">Employee</option>
                     <option value="manager">Manager</option>

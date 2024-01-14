@@ -55,7 +55,7 @@ const SignIn = () => {
       <form onSubmit={handleSubmit}>
         {/* UserName or Email */}
         <div className="mb-3">
-          <label htmlFor="userNameOrEmail" className="form-label">
+          <label htmlFor="userNameOrEmail" className="form-label" style={{ color: 'black', fontWeight: 'bold' }}>
             UserName or Email
           </label>
           <input
@@ -71,7 +71,7 @@ const SignIn = () => {
 
         {/* Password */}
         <div className="mb-3">
-          <label htmlFor="password" className="form-label">
+          <label htmlFor="password" className="form-label" style={{ color: 'black', fontWeight: 'bold' }}>
             Password
           </label>
           <input
@@ -92,11 +92,6 @@ const SignIn = () => {
 
         {/* Error message */}
         {error && <div className="text-danger mt-3">{error}</div>}
-
-        {/* Paragraph with SignUp link */}
-        <p className="mt-3">
-          Don't have an account? <Link to="/sign-up">Sign Up</Link>
-        </p>
       </form>
     </div>
   );
