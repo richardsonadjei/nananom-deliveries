@@ -32,7 +32,14 @@ export default function Header() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
         {/* Date and time at the center of the vw */}
-        <div className="current-date-time">{currentDateTime.toLocaleString()}</div>
+        <div className="current-date-time">
+      {currentDateTime.toLocaleDateString('en-GB', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })}
+    </div>
 
         <Navbar.Collapse id="basic-navbar-nav" className="ml-auto">
           <Nav className="mr-auto">
