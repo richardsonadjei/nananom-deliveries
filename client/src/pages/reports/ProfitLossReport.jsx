@@ -77,7 +77,7 @@ const ProfitLossReport = () => {
             <Row form>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="startDate">Start Date</Label>
+                  <Label for="startDate" style={{ color: 'black', fontWeight: 'bold' }}>Start Date</Label>
                   <Input
                     type="date"
                     name="startDate"
@@ -89,7 +89,7 @@ const ProfitLossReport = () => {
               </Col>
               <Col md={6}>
                 <FormGroup>
-                  <Label for="endDate">End Date</Label>
+                  <Label for="endDate" style={{ color: 'black', fontWeight: 'bold' }}>End Date</Label>
                   <Input
                     type="date"
                     name="endDate"
