@@ -3,12 +3,14 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import authRouter from './routes/auth.routes.js';
 import path from 'path';
-dotenv.config();
+
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import router from './routes/sales.router.js';
 import expenseRouter from './routes/expense.routes.js';
 import financialRouter from './routes/profitLoss.router.js';
+
+dotenv.config();
 
 mongoose
   .connect(process.env.MONGO)
