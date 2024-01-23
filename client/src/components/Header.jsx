@@ -23,7 +23,7 @@ export default function Header() {
         <Link to="/">
           <Navbar.Brand>
             <img
-              src="../../public/logo.png" // Replace with the actual path to your logo
+              src="/logo.png" // Replace with the actual path to your logo
               alt="Logo"
               className="logo"
             />
