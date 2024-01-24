@@ -238,18 +238,26 @@ import MaintenanceExpense from '../models/maintenanceExpenses.model.js'; // Adju
     try {
       const updatedOtherExpense = await OtherExpense.findByIdAndUpdate(
         id,
-        updatedData,
+        {
+          otherExpenseNumber: updatedData.otherExpenseNumber,
+          amount: updatedData.amount,
+          description: updatedData.description,
+          purchasedBy: updatedData.purchasedBy,
+          // Add other fields as needed
+        },
         { new: true }
       );
+  
       if (!updatedOtherExpense) {
         return res.status(404).json({ message: 'Other expense not found' });
       }
+  
       res.status(200).json(updatedOtherExpense);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   };
-
+  
   const deleteOtherExpense = async (req, res) => {
     const { id } = req.params;
     try {

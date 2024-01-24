@@ -20,13 +20,18 @@ const Home = () => {
   return (
     <div className="home-container">
       <Container>
+      <marquee style={{ color: 'purple', fontSize: '30px', fontWeight: 'bold', fontFamily: 'Arial, sans-serif', marginBottom: '10px' }}>
+  Welcome to Nananom Deliveries, <span style={{ color: 'orange', fontSize: '40px' }}>{(currentUser?.userName || 'Guest').toUpperCase()}</span>!
+</marquee>
+
+
         <Row>
         <Col md={4}>
   <Link to="/record-daily-sales">
     <Card className="animated-card card-sales">
       <Card.Body>
         <FaDollarSign className="icon" style={{ color: '#4CAF50' }} />
-        <Card.Title style={{ textDecoration: 'none' }}>Daily Sales</Card.Title>
+        <Card.Title style={{ textDecoration: 'none' }}>Tap To Record Daily Sales</Card.Title>
       </Card.Body>
     </Card>
   </Link>
@@ -47,6 +52,7 @@ const Home = () => {
         variant="success"
         className="expense-button me-2 mt-2"
         onClick={() => handleButtonClick('/record-maintenance')}
+        style={{ backgroundColor: 'purple', borderColor: 'purple' }}
       >
         <FaWrench className="button-icon" /> Maintenance
       </Button>
@@ -75,9 +81,15 @@ const Home = () => {
                     </Button>
               
                     {/* Maintenance Report Button */}
-                    <Button variant="success" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/maintenance-reports')}>
-                      <FaWrench className="button-icon" /> Maintenance Report
-                    </Button>
+                    <Button
+  variant="success"
+  className="report-button me-2 mt-2"
+  onClick={() => handleButtonClick('/maintenance-reports')}
+  style={{ backgroundColor: 'purple', borderColor: 'purple' }}
+>
+  <FaWrench className="button-icon" /> Maintenance Report
+</Button>
+
               
                     {/* Other Expense Report Button */}
                     <Button variant="warning" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/other-expense-reports')}>
@@ -85,9 +97,15 @@ const Home = () => {
                     </Button>
               
                     {/* Profit and Loss Report Button */}
-                    <Button variant="danger" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/profit-loss-reports')}>
-                      <FaChartLine className="button-icon" /> Profit and Loss Report
-                    </Button>
+                    <Button
+  variant="danger"
+  className="report-button me-2 mt-2"
+  onClick={() => handleButtonClick('/profit-loss-reports')}
+  style={{ backgroundColor: 'green', borderColor: 'green' }}
+>
+  <FaChartLine className="button-icon" /> Profit and Loss Report
+</Button>
+
                   </Card.Body>
                 </Card>
               </Col>

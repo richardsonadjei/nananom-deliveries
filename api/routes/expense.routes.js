@@ -46,7 +46,7 @@ expenseRouter.delete('/maintenance-expenses/:id', deleteMaintenanceExpense);
 expenseRouter.post('/add-other-expenses', createOtherExpense);
 expenseRouter.get('/other-expenses', getOtherExpenses);
 expenseRouter.get('/other-expenses/:id', getOtherExpenseById);
-expenseRouter.put('/other-expenses/:id', updateOtherExpense);
-expenseRouter.delete('/other-expenses/:id', deleteOtherExpense);
+expenseRouter.put('/update-other-expenses/:id', updateOtherExpense);
+expenseRouter.delete('/delete-other-expenses/:id', deleteOtherExpense);
 
 export default expenseRouter;

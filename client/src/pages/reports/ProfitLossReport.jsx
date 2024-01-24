@@ -142,7 +142,7 @@ const ProfitLossReport = () => {
                 <th>Fuel Purchase Number</th>
                 <th>Amount</th>
                 <th>Description</th>
-                <th>Purchased By</th>
+                <th>Recorded By</th>
               </tr>
             </thead>
             {/* Table body */}
@@ -171,7 +171,7 @@ const ProfitLossReport = () => {
                 <th>Maintenance Expense Number</th>
                 <th>Amount</th>
                 <th>Description</th>
-                <th>Purchased By</th>
+                <th>Recorded By</th>
               </tr>
             </thead>
             {/* Table body */}
@@ -200,7 +200,7 @@ const ProfitLossReport = () => {
                 <th>Other Expense Number</th>
                 <th>Amount</th>
                 <th>Description</th>
-                <th>Purchased By</th>
+                <th>Recorded By</th>
               </tr>
             </thead>
             {/* Table body */}
