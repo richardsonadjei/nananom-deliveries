@@ -68,12 +68,13 @@ export const getDailySaleById = async (req, res) => {
 export const updateDailySaleById = async (req, res) => {
   try {
     const { id } = req.params;
-    const { salesAmount, description, recordedBy } = req.body;
+    const { salesAmount, date, description, recordedBy } = req.body;
 
     const updatedSale = await DailySales.findByIdAndUpdate(
       id,
       {
         salesAmount,
+        date,
         description,
         recordedBy,
       },
@@ -90,6 +91,7 @@ export const updateDailySaleById = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 // Delete a specific daily sale by ID
 export const deleteDailySaleById = async (req, res) => {
