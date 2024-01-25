@@ -179,7 +179,7 @@ const OtherExpenseReport = () => {
             </thead>
             <tbody>
               {reportData.map((item, index) => (
-                <tr key={item.id}>
+                <tr key={item._id}>
                   <td>{index + 1}</td>
                   <td>{new Date(item.date).toLocaleDateString('en-GB')}</td>
                   <td>{item.otherExpenseNumber}</td>
@@ -190,7 +190,7 @@ const OtherExpenseReport = () => {
                     <span className="mr-2" onClick={() => handleEdit(item)}>
                       <FaEdit className="text-primary" />
                     </span>
-                    <span onClick={() => handleDelete(item.id)}>
+                    <span onClick={() => handleDelete(item._id)}>
                       <FaTrashAlt className="text-danger" />
                     </span>
                   </td>

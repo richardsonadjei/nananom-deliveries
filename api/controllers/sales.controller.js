@@ -93,11 +93,13 @@ export const updateDailySaleById = async (req, res) => {
 };
 
 
-// Delete a specific daily sale by ID
+// Import your DailySales model
+
+
 export const deleteDailySaleById = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedSale = await DailySales.findByIdAndRemove(id);
+    const deletedSale = await DailySales.findByIdAndDelete(id);
 
     if (!deletedSale) {
       return res.status(404).json({ error: 'Sale not found' });
@@ -109,3 +111,4 @@ export const deleteDailySaleById = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+

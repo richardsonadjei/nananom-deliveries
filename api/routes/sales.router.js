@@ -23,6 +23,6 @@ router.get('/sales:id', getDailySaleById);
 router.put('/update-sales/:id', updateDailySaleById);
 
 // Delete a specific daily sale by ID
-router.delete('delete-sales-record:id', deleteDailySaleById);
+router.delete('/daily-sales/:id', deleteDailySaleById);
 
 export default router;

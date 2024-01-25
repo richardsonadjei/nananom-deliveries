@@ -111,7 +111,7 @@ const handleUpdate = async () => {
 
     if (confirmDelete) {
       try {
-        const response = await fetch(`/api/delete-sales-record/${recordId}`, {
+        const response = await fetch(`/api/daily-sales/${recordId}`, {
           method: 'DELETE',
         });
 
