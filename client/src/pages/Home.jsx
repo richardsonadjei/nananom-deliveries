@@ -3,7 +3,7 @@ import { Card, Container, Row, Col, Button } from 'react-bootstrap';
 import { BsCreditCard, BsFileText } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { FaDollarSign } from 'react-icons/fa';
+import { FaDollarSign, FaMoneyBillWave, FaMoneyCheckAlt } from 'react-icons/fa';
 import { FaGasPump, FaWrench, FaExclamationTriangle, FaChartLine } from 'react-icons/fa';
 
 
@@ -41,26 +41,37 @@ const Home = () => {
           {(currentUser?.role === 'manager' || currentUser?.role === 'ceo') && (
             <>
              <Col md={4}>
-  <Card className="animated-card card-expense">
-    <Card.Body>
-      <BsCreditCard className="icon" />
-      <Card.Title>Expense</Card.Title>
-      <Button variant="primary" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/buy-fuel')}>
-        <FaGasPump className="button-icon" /> Fuel
-      </Button>
-      <Button
-        variant="success"
-        className="expense-button me-2 mt-2"
-        onClick={() => handleButtonClick('/record-maintenance')}
-        style={{ backgroundColor: 'purple', borderColor: 'purple' }}
-      >
-        <FaWrench className="button-icon" /> Maintenance
-      </Button>
-      <Button variant="warning" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/record-other-expense')}>
-        <FaExclamationTriangle className="button-icon" /> Other Expense
-      </Button>
-    </Card.Body>
-  </Card>
+             <Card className="animated-card card-expense">
+  <Card.Body>
+    <BsCreditCard className="icon" />
+    <Card.Title>Expense</Card.Title>
+    <Button variant="primary" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/buy-fuel')}>
+      <FaGasPump className="button-icon" /> Fuel
+    </Button>
+    <Button
+      variant="success"
+      className="expense-button me-2 mt-2"
+      onClick={() => handleButtonClick('/record-maintenance')}
+      style={{ backgroundColor: 'purple', borderColor: 'purple' }}
+    >
+      <FaWrench className="button-icon" /> Maintenance
+    </Button>
+    <Button variant="warning" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/record-other-expense')}>
+      <FaExclamationTriangle className="button-icon" /> Other Expense
+    </Button>
+    {/* MoMo Deposit Button */}
+    <Button
+      variant="info"  // Change to the desired color gradient
+      className="expense-button me-2 mt-2"
+      onClick={() => handleButtonClick('/add-momo-deposits')}
+    >
+      {/* Add animation class to the icon */}
+      <FaMoneyBillWave className="button-icon animated-icon" />
+      MoMo Deposit
+    </Button>
+  </Card.Body>
+</Card>
+
 </Col>
 
               {currentUser?.role === 'ceo' && (
@@ -96,6 +107,14 @@ const Home = () => {
                       <FaDollarSign className="button-icon" /> Other Expense Report
                     </Button>
               
+                    <Button
+          variant="dark" // Choose a unique color for MoMo Deposit Report
+          className="report-button me-2 mt-2"
+          onClick={() => handleButtonClick('/momo-deposits')}
+        >
+          <FaMoneyCheckAlt className="button-icon" /> MoMo Deposit Report
+        </Button>
+
                     {/* Profit and Loss Report Button */}
                     <Button
   variant="danger"

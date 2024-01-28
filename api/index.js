@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser';
 import router from './routes/sales.router.js';
 import expenseRouter from './routes/expense.routes.js';
 import financialRouter from './routes/profitLoss.router.js';
+import momoDepositsRouter from './routes/momoDeposits.routes.js';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/', router);
 app.use('/api/', expenseRouter);
 app.use('/api/', financialRouter);
+app.use('/api/', momoDepositsRouter);
 
 
 app.use(express.static(path.join(__dirname, '/client/dist')));
