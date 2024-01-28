@@ -19,7 +19,7 @@ const momoDepositSchema = new Schema(
     },
     depositNumber: {
         type: String,
-        default: '05497429929', 
+        default: '0597429929', 
      
       },
     description: {
