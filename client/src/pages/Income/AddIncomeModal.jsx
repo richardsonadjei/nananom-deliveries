@@ -41,15 +41,15 @@ const IncomeModal = ({ show, handleClose }) => {
   }, []);
 
   // Format date for the notes field
-  const getFormattedDate = () => {
+  const getFormattedDate = (date) => {
     const options = { weekday: 'short', month: 'short', day: 'numeric', year: '2-digit' };
-    return new Date().toLocaleDateString('en-US', options).replace(',', '');
+    return new Date(date).toLocaleDateString('en-US', options).replace(',', '');
   };
 
-  // Set default notes on load
+  // Update notes when the date changes
   useEffect(() => {
-    setNotes(`Sales made for ${getFormattedDate()}`);
-  }, []);
+    setNotes(`Sales made for ${getFormattedDate(date)}`);
+  }, [date]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -90,7 +90,7 @@ const IncomeModal = ({ show, handleClose }) => {
       setSelectedMotorbike(null);
       setAmount('');
       setPaymentMethod('Cash');
-      setNotes(`Sales made for ${getFormattedDate()}`);
+      setNotes(`Sales made for ${getFormattedDate(new Date())}`);
       setDate(new Date().toISOString().split('T')[0]);
       setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
 
