@@ -1,250 +1,280 @@
-/* Your existing CSS */
-
-/* Add the following styles for the header */
-.navbar {
-  background: linear-gradient(135deg, #3498db, #e74c3c); /* Replace with your preferred gradient colors */
-  border-bottom-left-radius: 20px; /* Adjust the curve radius as needed */
-  border-bottom-right-radius: 20px; /* Adjust the curve radius as needed */
+/* Custom styles */
+.custom-header {
+  background-color: #007bff;
 }
 
-/* Add styles for the logo */
-.logo {
-  max-height: 40px; /* Adjust the max height as needed */
-  display: block;
-  margin: 0 auto; /* Center the logo horizontally */
-  transition: transform 0.3s ease; /* Add transition effect for scaling */
-}
-
-/* Add hover effects for the logo */
-.logo:hover {
-  transform: scale(1.1); /* Scale the logo on hover */
-}
-
-/* Adjust margin between "Sign In" and "Sign Up" on larger screens */
-@media (min-width: 768px) {
-  .navbar-nav.ml-auto .text-dark {
-    margin-right: 10px; /* Adjust the margin as needed */
-  }
-}
-
-/* Add styles for navigation links */
-.navbar-nav.ml-auto .text-dark {
-  padding: 0.5rem 1rem; /* Add padding to the navigation links */
-}
-
-/* Add styles for active navigation link */
-.navbar-nav .nav-item.active .text-dark {
-  font-weight: bold; /* Example: Set a bold font for the active link */
-  color: #fff; /* Example: Set a different color for the active link */
-}
-
-
-/* SIGN-UP */
-  .form-signup {
-    background-color: rgba(255, 255, 255, 0.9); /* Transparent white background */
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Add any additional styling as needed */
-  
-/* Home.css */
-/* Home.css */
 .home-container {
-  background-image: url('../public/bg.png');
-  background-size: cover;
-  background-position: center;
-  min-height: 100vh;
+  padding: 20px;
+}
+
+.button-grid {
+  margin-bottom: 20px;
+}
+
+.custom-card {
+  margin: 10px 0;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.icon-large {
+  font-size: 50px;
+  color: #fff;
+}
+
+.balance-summary {
+  text-align: center;
+  background-color: #f8f9fa;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.1);
+}
+
+.summary-header {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.summary-table {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  text-align: left;
+}
+
+.previous-balance {
+  margin-top: 10px;
   display: flex;
-  align-items: center;
+  justify-content: space-between;
 }
 
-.animated-card {
-  transition: transform 0.3s ease-in-out;
+.recent-transactions {
+  margin-top: 20px;
 }
 
-.animated-card:hover {
-  transform: scale(1.05);
+.transaction-date {
+  font-size: 12px;
+  color: #6c757d;
 }
 
-.icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-  transition: transform 0.3s ease-in-out;
+.transaction-description {
+  font-weight: bold;
 }
 
-.icon:hover {
-  transform: rotate(360deg);
+.transaction-amount {
+  float: right;
 }
 
-/* Card Designs */
-.link-card {
-  text-decoration: none;
-}
-
-.card-sales {
-  background: linear-gradient(to right, #3498db, #2c3e50);
-  color: white;
-}
-
-.card-expense {
-  background: red;
-  color: white;
-}
-
-.card-report {
-  background: linear-gradient(to right, #1abc9c, #16a085);
-  color: white;
+.transaction-type {
+  font-size: 12px;
+  color: #6c757d;
 }
 
 
-
-.custom-navbar {
+.custom-header {
+  display: flex;
   justify-content: space-between;
   padding: 10px 20px;
 }
 
-.current-date-time {
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 10px;
+.menu-icon {
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
 }
 
-/* Additional styles for nav items */
-.nav-link {
-  font-weight: bold;
+.offcanvas-menu {
+  width: 250px;
+}
+
+.fixed-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #007bff; /* Keep the same background color as the header */
+}
+
+body {
+  padding-top: 60px; /* Adjust this depending on the height of the header */
+}
+
+.main-content {
+  margin-top: 60px; /* Ensures content doesn't get hidden under the header */
+}
+
+
+.custom-card {
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 200px;
+  height: 180px;
+  margin: 10px auto;
   padding: 10px;
-  margin-right: 10px;
+  display: flex;
+  align-items: center; /* Centers items vertically */
+  justify-content: center; /* Centers items horizontally */
+  flex-direction: column; /* Ensures icon and title are in a column */
+  text-align: center; /* Ensures the text is centered */
 }
 
-/* Media query for smaller screens */
-@media (max-width: 768px) {
-  .current-date-time {
-    text-align: center;
-    margin-bottom: 10px;
-    display: block; /* Display on smaller screens outside the hamburger menu */
+.custom-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.icon-large {
+  font-size: 40px; /* Reduced icon size */
+  color: #fff;
+}
+
+.card-title {
+  font-size: 16px; /* Reduced title font size */
+  font-weight: bold;
+}
+
+.add-income-card {
+  background-color: #28a745; /* Green for Income */
+}
+
+.add-expense-card {
+  background-color: #dc3545; /* Red for Expense */
+}
+
+.transfer-card {
+  background-color: #ffc107; /* Yellow for Transfer */
+}
+
+.transaction-card {
+  background-color: #17a2b8; /* Blue for Transactions */
+}
+
+
+/* Custom Offcanvas */
+.custom-offcanvas {
+  background-color: #f9f9f9;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease-in-out;
+}
+
+.custom-offcanvas .offcanvas-header-custom {
+  background-color: #4a90e2;
+  color: #fff;
+}
+
+.custom-offcanvas .offcanvas-title-custom {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  animation: slide-down 0.5s ease;
+}
+
+@keyframes slide-down {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
   }
-
-  .navbar-toggler {
-    order: -1; /* Move the hamburger menu to the left on smaller screens */
-  }
-
-   /* Add margin between cards on smaller screens */
-   .card {
-    margin-bottom: 10px;
-  }
-}
-
-
-
-
-/* USERNAME CSS */
-/* Add this CSS to your stylesheets */
-.custom-navbar {
-  /* Add any custom styles for the Navbar here */
-}
-
-.current-date-time {
-  /* Add styles for the date and time at the center of the vw */
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  color: #333; /* Customize the color */
-}
-
-.text-dark {
-  /* Add styles for the text-dark class */
-  color: #333; /* Customize the default text color */
-  transition: color 0.3s ease; /* Add a smooth color transition effect */
-}
-
-.text-dark:hover {
-  /* Add styles for the text-dark class on hover */
-  color: #007bff; /* Customize the text color on hover */
-}
-
-/* Add animations for userName */
-.text-dark span {
-  display: inline-block;
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.text-dark:hover span {
-  /* Add translations and color changes on hover */
-  transform: translateY(-3px); /* Customize the translation effect */
-  color: #28a745; /* Customize the text color on hover */
-}
-
-/* Add this CSS to your stylesheets */
-.current-date-time {
-  /* Add styles for the date and time at the center of the vw */
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  color: greenyellow; /* Customize the text color */
-  transition: color 0.5s ease; /* Add a smooth color transition effect */
-  animation: fadeInOut 2s infinite alternate; /* Add a simple fade-in and fade-out animation */
-}
-
-@keyframes fadeInOut {
-  0% {
-    opacity: 0.5;
-  }
-  100% {
+  to {
+    transform: translateY(0);
     opacity: 1;
   }
 }
 
-/* FUEL FORM CONTAINER */
-/* Add this CSS to your stylesheets */
-.buy-fuel-container {
-  background-image: url('../public//fuel\ station.png'); /* Replace with the actual path to your image */
-  background-size: cover;
-  background-position: center;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
+.custom-offcanvas .nav-link-custom {
+  padding: 15px 10px;
+  color: #333;
+  font-size: 1.2rem;
+  font-weight: 500;
+  transition: background-color 0.3s, color 0.3s;
+  border-bottom: 1px solid #e0e0e0;
 }
 
-/* Add this CSS to your stylesheets */
-.buy-fuel-container h2,
-.buy-fuel-container label {
-  font-size: 1.5rem; /* Adjust the font size as needed */
-  font-weight: bold; /* Make the text bold */
+.custom-offcanvas .nav-link-custom:hover {
+  background-color: #f0f0f0;
+  color: #4a90e2;
+  text-decoration: none;
 }
 
-/* Add additional styling as needed */
+.custom-offcanvas .dropdown-toggle::after {
+  display: none;
+}
+
+.custom-offcanvas .dropdown-menu {
+  background-color: #f9f9f9;
+  border: none;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.custom-offcanvas .dropdown-item {
+  padding: 10px 20px;
+  font-size: 1.1rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.custom-offcanvas .dropdown-item:hover {
+  background-color: #f0f0f0;
+  color: #4a90e2;
+}
 
 
-/* Add this CSS to your stylesheets or create a new CSS file */
-.profile-container {
-  background: linear-gradient(135deg, #16a085, #3498db);/* Replace with your preferred gradient colors */
+.balance-summary {
   padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  color: #fff; /* Set text color to white or your preferred color */
+  background-color: #f8f9fa;
 }
 
-.form-label {
-  color: #fff; /* Set label text color to white or your preferred color */
+.summary-card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.btn-primary {
-  background: linear-gradient(to right, #3498db, #e74c3c); /* Replace with your preferred gradient colors */
-  border: none;
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
 }
 
-.btn-primary:hover {
-  background: linear-gradient(to right, #2c3e50, #c0392b); /* Adjust hover colors as needed */
+.summary-header h5 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #343a40;
 }
 
-.btn-secondary {
-  background: #fff; /* Set background color to white or your preferred color */
-  color: #3498db; /* Set text color to your primary color */
-  border: none;
+.summary-header span {
+  font-size: 14px;
+  color: #6c757d;
 }
 
-.btn-secondary:hover {
-  background: #eee; /* Adjust hover colors as needed */
+.summary-table {
+  margin-top: 10px;
+  font-size: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 15px;
+}
+
+.summary-table div:nth-child(2n) {
+  text-align: right;
+}
+
+.text-danger {
+  color: #e74c3c !important;
+}
+
+.weekly-summary {
+  background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+}
+
+.monthly-summary {
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+}
+
+@media (max-width: 767px) {
+  .summary-card {
+    margin-bottom: 20px;
+  }
 }

@@ -1,138 +1,93 @@
-import React from 'react';
-import { Card, Container, Row, Col, Button } from 'react-bootstrap';
-import { BsCreditCard, BsFileText } from 'react-icons/bs';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { FaDollarSign, FaMoneyBillWave, FaMoneyCheckAlt } from 'react-icons/fa';
-import { FaGasPump, FaWrench, FaExclamationTriangle, FaChartLine } from 'react-icons/fa';
-
-
+import React, { useState } from 'react';
+import { Row, Col, Button } from 'react-bootstrap';
+import IncomeCard from './Home/Income';
+import ExpenseCard from './Home/Expense';
+import TransferCard from './Home/Transfer';
+import TransactionCard from './Home/Transaction';
+import BalanceSummary from './Home/BalanceSummary';
+import RecentTransactions from './Home/RecentTransaction';
+import IncomeModal from './Income/AddIncomeModal';
+import ExpenseModal from './Expense/AddExpenseModal';
+import TransferModal from './Transfer/AddTransferModal';
 
 
 const Home = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const [showExpenseModal, setShowExpenseModal] = useState(false);
+  const [showIncomeModal, setShowIncomeModal] = useState(false); 
+  const [showTransferModal, setShowTransferModal] = useState(false); // State for TransferModal
 
-  const handleButtonClick = (route) => {
-    // Navigate to a specific route
-    window.location.href = route;
+  // Handle Expense Modal
+  const handleCloseExpense = () => setShowExpenseModal(false);
+  const handleShowExpense = () => setShowExpenseModal(true);
+
+  // Handle Income Modal
+  const handleCloseIncome = () => setShowIncomeModal(false);
+  const handleShowIncome = () => setShowIncomeModal(true);
+
+  // Handle Transfer Modal
+  const handleCloseTransfer = () => setShowTransferModal(false);
+  const handleShowTransfer = () => setShowTransferModal(true);
+
+  // Save Expense
+  const handleSaveExpense = (expenseData) => {
+    console.log('Saved Expense:', expenseData);
+    // Handle saving logic here (e.g., send data to backend)
+  };
+
+  // Save Income
+  const handleSaveIncome = (incomeData) => {
+    console.log('Saved Income:', incomeData);
+    // Handle saving logic here (e.g., send data to backend)
+  };
+
+  // Save Transfer
+  const handleSaveTransfer = (transferData) => {
+    console.log('Saved Transfer:', transferData);
+    // Handle saving logic here (e.g., send data to backend)
   };
 
   return (
     <div className="home-container">
-      <Container>
-      <marquee style={{ color: 'purple', fontSize: '30px', fontWeight: 'bold', fontFamily: 'Arial, sans-serif', marginBottom: '10px' }}>
-  Welcome to Nananom Deliveries, <span style={{ color: 'orange', fontSize: '40px' }}>{(currentUser?.userName || 'Guest').toUpperCase()}</span>!
-</marquee>
-
-
+      <div className="button-grid">
         <Row>
-        <Col md={4}>
-  <Link to="/record-daily-sales">
-    <Card className="animated-card card-sales">
-      <Card.Body>
-        <FaDollarSign className="icon" style={{ color: '#4CAF50' }} />
-        <Card.Title style={{ textDecoration: 'none' }}>Tap To Record Daily Sales</Card.Title>
-      </Card.Body>
-    </Card>
-  </Link>
-</Col>
-
-
-          {(currentUser?.role === 'manager' || currentUser?.role === 'ceo') && (
-            <>
-             <Col md={4}>
-             <Card className="animated-card card-expense">
-  <Card.Body>
-    <BsCreditCard className="icon" />
-    <Card.Title>Expense</Card.Title>
-    <Button variant="primary" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/buy-fuel')}>
-      <FaGasPump className="button-icon" /> Fuel
-    </Button>
-    <Button
-      variant="success"
-      className="expense-button me-2 mt-2"
-      onClick={() => handleButtonClick('/record-maintenance')}
-      style={{ backgroundColor: 'purple', borderColor: 'purple' }}
-    >
-      <FaWrench className="button-icon" /> Maintenance
-    </Button>
-    <Button variant="warning" className="expense-button me-2 mt-2" onClick={() => handleButtonClick('/record-other-expense')}>
-      <FaExclamationTriangle className="button-icon" /> Other Expense
-    </Button>
-    {/* MoMo Deposit Button */}
-    <Button
-      variant="info"  // Change to the desired color gradient
-      className="expense-button me-2 mt-2"
-      onClick={() => handleButtonClick('/add-momo-deposits')}
-    >
-      {/* Add animation class to the icon */}
-      <FaMoneyBillWave className="button-icon animated-icon" />
-      MoMo Deposit
-    </Button>
-  </Card.Body>
-</Card>
-
-</Col>
-
-              {currentUser?.role === 'ceo' && (
-                <Col md={4}>
-                <Card className="animated-card card-report">
-                  <Card.Body>
-                    <BsFileText className="icon" />
-                    <Card.Title>Report</Card.Title>
-              
-                    {/* Add Daily Sales Report Button */}
-                    <Button variant="primary" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/daily-sales-report')}>
-                      <FaDollarSign className="button-icon" /> Daily Sales Report
-                    </Button>
-              
-                    {/* Fuel Report Button */}
-                    <Button variant="info" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/fuel-reports')}>
-                      <FaGasPump className="button-icon" /> Fuel Report
-                    </Button>
-              
-                    {/* Maintenance Report Button */}
-                    <Button
-  variant="success"
-  className="report-button me-2 mt-2"
-  onClick={() => handleButtonClick('/maintenance-reports')}
-  style={{ backgroundColor: 'purple', borderColor: 'purple' }}
->
-  <FaWrench className="button-icon" /> Maintenance Report
-</Button>
-
-              
-                    {/* Other Expense Report Button */}
-                    <Button variant="warning" className="report-button me-2 mt-2" onClick={() => handleButtonClick('/other-expense-reports')}>
-                      <FaDollarSign className="button-icon" /> Other Expense Report
-                    </Button>
-              
-                    <Button
-          variant="dark" // Choose a unique color for MoMo Deposit Report
-          className="report-button me-2 mt-2"
-          onClick={() => handleButtonClick('/momo-deposits')}
-        >
-          <FaMoneyCheckAlt className="button-icon" /> MoMo Deposit Report
-        </Button>
-
-                    {/* Profit and Loss Report Button */}
-                    <Button
-  variant="danger"
-  className="report-button me-2 mt-2"
-  onClick={() => handleButtonClick('/profit-loss-reports')}
-  style={{ backgroundColor: 'green', borderColor: 'green' }}
->
-  <FaChartLine className="button-icon" /> Profit and Loss Report
-</Button>
-
-                  </Card.Body>
-                </Card>
-              </Col>
-              )}
-            </>
-          )}
+          <Col xs={6} md={3}>
+            <IncomeCard handleShow={handleShowIncome} /> {/* Pass handleShowIncome to IncomeCard */}
+          </Col>
+          <Col xs={6} md={3}>
+            <ExpenseCard handleShow={handleShowExpense} /> {/* Pass handleShowExpense to ExpenseCard */}
+          </Col>
+          <Col xs={6} md={3}>
+            <TransferCard handleShow={handleShowTransfer} /> {/* Pass handleShowTransfer to TransferCard */}
+          </Col>
+          <Col xs={6} md={3}>
+            <TransactionCard />
+          </Col>
         </Row>
-      </Container>
+      </div>
+
+      <BalanceSummary />
+      <RecentTransactions />
+
+      {/* Expense Modal */}
+      <ExpenseModal
+        show={showExpenseModal}
+        handleClose={handleCloseExpense}
+        handleSave={handleSaveExpense}
+      />
+
+      {/* Income Modal */}
+      <IncomeModal
+        show={showIncomeModal}
+        handleClose={handleCloseIncome}
+        handleSave={handleSaveIncome}
+      />
+
+      {/* Transfer Modal */}
+      <TransferModal
+        show={showTransferModal}
+        handleClose={handleCloseTransfer}
+        handleSave={handleSaveTransfer}
+      />
     </div>
   );
 };
