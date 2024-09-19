@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 
 // Utility function to get the date range for the current week
 const getCurrentWeekRange = () => {
@@ -48,6 +49,7 @@ const groupByMotorbike = (transactions) => {
 
 const BalanceSummary = () => {
   const [motorbikeData, setMotorbikeData] = useState({});
+  const currentUser = useSelector((state) => state.user.currentUser?.userName || '');
 
   // Fetch transactions from the API
   const fetchData = async () => {
@@ -99,63 +101,65 @@ const BalanceSummary = () => {
 
   return (
     <div className="balance-summary">
-      <Row>
-        {Object.keys(motorbikeData).map((motorbike, index) => {
-          const incomes = motorbikeData[motorbike].incomes;
-          const expenses = motorbikeData[motorbike].expenses;
+      <Row className="justify-content-center"> {/* Center the cards */}
+        {Object.keys(motorbikeData)
+          .filter((motorbike) => !(currentUser === 'Pinkrah' && motorbike === 'M-24-GR 4194')) // Filter out the motorbike for Pinkrah
+          .map((motorbike, index) => {
+            const incomes = motorbikeData[motorbike].incomes;
+            const expenses = motorbikeData[motorbike].expenses;
 
-          const totalIncomeWeek = calculateTotal(incomes, isDateInCurrentWeek);
-          const totalExpenseWeek = calculateTotal(expenses, isDateInCurrentWeek);
-          const totalIncomeMonth = calculateTotal(incomes, isDateInCurrentMonth);
-          const totalExpenseMonth = calculateTotal(expenses, isDateInCurrentMonth);
+            const totalIncomeWeek = calculateTotal(incomes, isDateInCurrentWeek);
+            const totalExpenseWeek = calculateTotal(expenses, isDateInCurrentWeek);
+            const totalIncomeMonth = calculateTotal(incomes, isDateInCurrentMonth);
+            const totalExpenseMonth = calculateTotal(expenses, isDateInCurrentMonth);
 
-          return (
-            <Col xs={12} md={6} className="mb-4" key={index}>
-              <div className={`summary-card motorbike-summary ${index % 2 === 0 ? 'weekly-summary' : 'monthly-summary'}`}>
-                {/* Motorbike and Weekly Summary */}
-                <div className="summary-header">
-                  <h5>Motorbike: {motorbike}</h5>
-                  <span>{getCurrentWeekRange()}</span>
-                </div>
+            return (
+              <Col xs={12} md={6} className="mb-4" key={index}>
+                <div className={`summary-card motorbike-summary ${index % 2 === 0 ? 'weekly-summary' : 'monthly-summary'}`}>
+                  {/* Motorbike and Weekly Summary */}
+                  <div className="summary-header">
+                    <h5>Motorbike: {motorbike}</h5>
+                    <span>{getCurrentWeekRange()}</span>
+                  </div>
 
-                <div className="summary-table">
-                  <div>
-                    <strong>Weekly Income</strong>
-                    <div>{totalIncomeWeek.toLocaleString()}</div>
+                  <div className="summary-table">
+                    <div>
+                      <strong>Weekly Income</strong>
+                      <div>{totalIncomeWeek.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <strong>Weekly Expense</strong>
+                      <div className="text-danger">{totalExpenseWeek.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <strong>Weekly Balance</strong>
+                      <div>{(totalIncomeWeek - totalExpenseWeek).toLocaleString()}</div>
+                    </div>
                   </div>
-                  <div>
-                    <strong>Weekly Expense</strong>
-                    <div className="text-danger">{totalExpenseWeek.toLocaleString()}</div>
-                  </div>
-                  <div>
-                    <strong>Weekly Balance</strong>
-                    <div>{(totalIncomeWeek - totalExpenseWeek).toLocaleString()}</div>
-                  </div>
-                </div>
 
-                {/* Monthly Summary */}
-                <div className="summary-header mt-3">
-                  <h5>Monthly Summary</h5>
-                  <span>{getCurrentMonthRange()}</span>
+                  {/* Monthly Summary */}
+                  <div className="summary-header mt-3">
+                    <h5>Monthly Summary</h5>
+                    <span>{getCurrentMonthRange()}</span>
+                  </div>
+                  <div className="summary-table">
+                    <div>
+                      <strong>Monthly Income</strong>
+                      <div>{totalIncomeMonth.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <strong>Monthly Expense</strong>
+                      <div className="text-danger">{totalExpenseMonth.toLocaleString()}</div>
+                    </div>
+                    <div>
+                      <strong>Monthly Balance</strong>
+                      <div>{(totalIncomeMonth - totalExpenseMonth).toLocaleString()}</div>
+                    </div>
+                  </div>
                 </div>
-                <div className="summary-table">
-                  <div>
-                    <strong>Monthly Income</strong>
-                    <div>{totalIncomeMonth.toLocaleString()}</div>
-                  </div>
-                  <div>
-                    <strong>Monthly Expense</strong>
-                    <div className="text-danger">{totalExpenseMonth.toLocaleString()}</div>
-                  </div>
-                  <div>
-                    <strong>Monthly Balance</strong>
-                    <div>{(totalIncomeMonth - totalExpenseMonth).toLocaleString()}</div>
-                  </div>
-                </div>
-              </div>
-            </Col>
-          );
-        })}
+              </Col>
+            );
+          })}
       </Row>
     </div>
   );
