@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ListGroup } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 
 const RecentTransactions = () => {
   const [transactions, setTransactions] = useState([]);
+  const currentUser = useSelector((state) => state.user.currentUser?.userName || '');
 
   // Fetch transactions from the API
   const fetchTransactions = async () => {
@@ -33,9 +35,16 @@ const RecentTransactions = () => {
       }));
 
       // Combine and sort transactions by date
-      const allTransactions = [...incomeTransactions, ...expenseTransactions].sort(
+      let allTransactions = [...incomeTransactions, ...expenseTransactions].sort(
         (a, b) => new Date(b.date) - new Date(a.date)
       );
+
+      // If the current user is "Pinkrah", filter out transactions for the specific motorbike
+      if (currentUser === 'Pinkrah') {
+        allTransactions = allTransactions.filter(
+          (transaction) => transaction.motorbike?.registrationNumber !== 'M-24-GR 4194'
+        );
+      }
 
       // Only show the 5 most recent transactions
       setTransactions(allTransactions.slice(0, 5));
@@ -52,7 +61,7 @@ const RecentTransactions = () => {
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [currentUser]);
 
   // Function to format the date as Mon Aug 8 -24
   const formatDate = (dateString) => {
@@ -65,7 +74,7 @@ const RecentTransactions = () => {
 
   return (
     <div className="recent-transactions">
-    <h5 style={{ color: 'white' }}>Recent Transactions</h5>
+      <h5 style={{ color: 'white' }}>Recent Transactions</h5>
       <ListGroup style={{ maxHeight: '200px', overflowY: 'auto' }}> {/* Set a max height and enable vertical scrolling */}
         {transactions.length > 0 ? (
           transactions.map((transaction, index) => (

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const BikeSelector = ({ onSelectBike }) => {
   const [bikes, setBikes] = useState([]);
+  const currentUser = useSelector((state) => state.user.currentUser?.userName || '');
 
   // Fetch available bikes
   useEffect(() => {
@@ -65,17 +67,22 @@ const BikeSelector = ({ onSelectBike }) => {
   // Add button hover effect using state
   const [hover, setHover] = useState(false);
 
+  // Filter out the bike for Pinkrah
+  const filteredBikes = currentUser === 'Pinkrah' 
+    ? bikes.filter((bike) => bike.registrationNumber !== 'M-24-GR 4194') 
+    : bikes;
+
   return (
     <div style={containerStyle}>
       <h5 style={headerStyle}>Select Motorbike</h5>
       <select
         style={selectStyle}
         onChange={(e) =>
-          onSelectBike(bikes.find((bike) => bike._id === e.target.value))
+          onSelectBike(filteredBikes.find((bike) => bike._id === e.target.value))
         }
       >
         <option value="">Select a bike</option>
-        {bikes.map((bike) => (
+        {filteredBikes.map((bike) => (
           <option key={bike._id} value={bike._id}>
             {bike.registrationNumber}
           </option>
