@@ -97,7 +97,8 @@
 }
 
 body {
-  padding-top: 60px; /* Adjust this depending on the height of the header */
+  padding-top: 60px; 
+  background-color: #19437D;
 }
 
 .main-content {
@@ -221,7 +222,7 @@ body {
 
 .balance-summary {
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: #19437D;
 }
 
 .summary-card {
@@ -242,23 +243,28 @@ body {
   font-size: 18px;
   font-weight: bold;
   color: #343a40;
+  text-align: center;
 }
 
 .summary-header span {
   font-size: 14px;
   color: #6c757d;
+  text-align: center;
+  display: block;
 }
 
 .summary-table {
   margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
   font-size: 16px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 15px;
 }
 
-.summary-table div:nth-child(2n) {
-  text-align: right;
+.summary-table div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .text-danger {
@@ -274,7 +280,17 @@ body {
 }
 
 @media (max-width: 767px) {
-  .summary-card {
-    margin-bottom: 20px;
+  .summary-table {
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  .summary-header h5,
+  .summary-header span {
+    text-align: left;
+  }
+
+  .summary-table div {
+    text-align: center;
   }
 }

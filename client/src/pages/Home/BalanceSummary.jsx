@@ -117,13 +117,20 @@ const BalanceSummary = () => {
                   <h5>Motorbike: {motorbike}</h5>
                   <span>{getCurrentWeekRange()}</span>
                 </div>
+
                 <div className="summary-table">
-                  {/* Weekly Summary: Headers and Values Below */}
-                  <Row>
-                    <Col><strong>Weekly Income</strong><div>{totalIncomeWeek.toLocaleString()}</div></Col>
-                    <Col><strong>Weekly Expense</strong><div className="text-danger">{totalExpenseWeek.toLocaleString()}</div></Col>
-                    <Col><strong>Weekly Balance</strong><div>{(totalIncomeWeek - totalExpenseWeek).toLocaleString()}</div></Col>
-                  </Row>
+                  <div>
+                    <strong>Weekly Income</strong>
+                    <div>{totalIncomeWeek.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <strong>Weekly Expense</strong>
+                    <div className="text-danger">{totalExpenseWeek.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <strong>Weekly Balance</strong>
+                    <div>{(totalIncomeWeek - totalExpenseWeek).toLocaleString()}</div>
+                  </div>
                 </div>
 
                 {/* Monthly Summary */}
@@ -132,12 +139,18 @@ const BalanceSummary = () => {
                   <span>{getCurrentMonthRange()}</span>
                 </div>
                 <div className="summary-table">
-                  {/* Monthly Summary: Headers and Values Below */}
-                  <Row>
-                    <Col><strong>Monthly Income</strong><div>{totalIncomeMonth.toLocaleString()}</div></Col>
-                    <Col><strong>Monthly Expense</strong><div className="text-danger">{totalExpenseMonth.toLocaleString()}</div></Col>
-                    <Col><strong>Monthly Balance</strong><div>{(totalIncomeMonth - totalExpenseMonth).toLocaleString()}</div></Col>
-                  </Row>
+                  <div>
+                    <strong>Monthly Income</strong>
+                    <div>{totalIncomeMonth.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <strong>Monthly Expense</strong>
+                    <div className="text-danger">{totalExpenseMonth.toLocaleString()}</div>
+                  </div>
+                  <div>
+                    <strong>Monthly Balance</strong>
+                    <div>{(totalIncomeMonth - totalExpenseMonth).toLocaleString()}</div>
+                  </div>
                 </div>
               </div>
             </Col>

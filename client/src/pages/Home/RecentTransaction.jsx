@@ -65,7 +65,7 @@ const RecentTransactions = () => {
 
   return (
     <div className="recent-transactions">
-      <h5>Recent Transactions</h5>
+    <h5 style={{ color: 'white' }}>Recent Transactions</h5>
       <ListGroup style={{ maxHeight: '200px', overflowY: 'auto' }}> {/* Set a max height and enable vertical scrolling */}
         {transactions.length > 0 ? (
           transactions.map((transaction, index) => (

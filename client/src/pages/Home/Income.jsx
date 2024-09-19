@@ -6,7 +6,7 @@ const IncomeCard = ({ handleShow }) => {
   return (
     <Card className="custom-card add-income-card" onClick={handleShow} style={{ cursor: 'pointer' }}>
       <FaPlusCircle className="icon-large" />
-      <Card.Title>Add Income</Card.Title>
+      <Card.Title>Sales</Card.Title>
     </Card>
   );
 };
