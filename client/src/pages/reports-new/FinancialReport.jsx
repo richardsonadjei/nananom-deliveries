@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react';
 import ReportSummary from './Summary';
 import TransactionList from './Transaction';
 
-
 const FinancialReportView = ({ selectedBike }) => {
   const [transactions, setTransactions] = useState([]);
   const [summary, setSummary] = useState({ income: 0, expenses: 0, transfers: 0 });
 
   useEffect(() => {
-    if (selectedBike) {
+    if (selectedBike && selectedBike._id) {
       // Fetch financial reports for the selected bike
       const fetchTransactions = async () => {
         try {
-          const response = await fetch(`/api/incomes-expenses?motorbikeId=${selectedBike}`);
+          const response = await fetch(`/api/incomes-expenses?motorbikeId=${selectedBike._id}`);
           const data = await response.json();
 
           const income = data.incomes.reduce((sum, item) => sum + item.amount, 0);
@@ -33,8 +32,8 @@ const FinancialReportView = ({ selectedBike }) => {
   }, [selectedBike]);
 
   return (
-    <div>
-      <h5>Financial Report for Bike {selectedBike}</h5>
+    <div className="financial-report">
+      <h5>Financial Report for Bike {selectedBike?.registrationNumber || 'Unknown'}</h5>
       <ReportSummary summary={summary} />
       <TransactionList transactions={transactions} />
     </div>

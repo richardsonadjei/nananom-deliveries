@@ -19,6 +19,7 @@ import DailySalesReport from './pages/reports/DailySalesReport';
 import MoMoDeposit from './pages/MomoDeposit';
 import MomoDepositReport from './pages/reports/MomoDepositReport';
 import FinancialReportsPage from './pages/reports-new/Main';
+import IncomeRecords from './pages/reports-new/allreports/IncomeRepport';
 
 export default function App() {
 
@@ -45,6 +46,7 @@ export default function App() {
           <Route path='/add-momo-deposits' element={<MoMoDeposit/>} />
           <Route path='/momo-deposits' element={<MomoDepositReport/>} />
           <Route path='/reports' element={<FinancialReportsPage/>} />
+          <Route path='/income' element={<IncomeRecords/>} />
          
        
         </Route>

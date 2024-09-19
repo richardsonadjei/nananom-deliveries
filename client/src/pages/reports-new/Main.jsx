@@ -8,7 +8,7 @@ const FinancialReportsPage = () => {
 
   return (
     <div>
-      <h4>Financial Reports</h4>
+     
       <BikeSelector onSelectBike={setSelectedBike} />
       {selectedBike && <FinancialReportView selectedBike={selectedBike} />}
     </div>
