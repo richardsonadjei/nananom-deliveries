@@ -18,14 +18,16 @@ const RecentTransactions = () => {
       // Combine income and expenses into one array and assign the type manually
       const incomeTransactions = data.incomes.map((item) => ({
         ...item,
-        description: `Income from Motorbike ${item.motorbike?.model || ''} - ${item.motorbike?.registrationNumber || ''}`,
+        description: `Sales for Motorbike ${item.motorbike?.registrationNumber || ''}`,
         transactionType: 'Income',
         color: 'text-success',
       }));
 
       const expenseTransactions = data.expenses.map((item) => ({
         ...item,
-        description: `Expense for ${item.category?.name || 'General'} ${item.motorbike ? '- ' + item.motorbike.registrationNumber : ''}`,
+        description: item.category?.name === 'Transfers'
+          ? `${item.notes} ${item.motorbike ? `for ${item.motorbike.registrationNumber}` : ''}`
+          : `Expense for ${item.category?.name || 'General'} ${item.motorbike ? '- ' + item.motorbike.registrationNumber : ''}`,
         transactionType: 'Expense',
         color: 'text-danger',
       }));

@@ -6,7 +6,7 @@ const TransactionCard = () => {
   return (
     <Card className="custom-card transaction-card">
       <FaListAlt className="icon-large" />
-      <Card.Title>Transactions</Card.Title>
+      <Card.Title>Reports</Card.Title>
     </Card>
   );
 };

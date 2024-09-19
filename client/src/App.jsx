@@ -18,6 +18,7 @@ import ProfitLossReport from './pages/reports/ProfitLossReport';
 import DailySalesReport from './pages/reports/DailySalesReport';
 import MoMoDeposit from './pages/MomoDeposit';
 import MomoDepositReport from './pages/reports/MomoDepositReport';
+import FinancialReportsPage from './pages/reports-new/Main';
 
 export default function App() {
 
@@ -43,6 +44,7 @@ export default function App() {
           <Route path='/daily-sales-report' element={<DailySalesReport/>} />
           <Route path='/add-momo-deposits' element={<MoMoDeposit/>} />
           <Route path='/momo-deposits' element={<MomoDepositReport/>} />
+          <Route path='/reports' element={<FinancialReportsPage/>} />
          
        
         </Route>

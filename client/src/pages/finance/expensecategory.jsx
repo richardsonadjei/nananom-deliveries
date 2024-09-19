@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Alert } from 'react-bootstrap';
 
-const NewExpenseCategoryModal = ({ show, handleClose, onCategoryCreated }) => {
+const NewExpenseCategoryModal = ({ show, handleClose }) => {
   const [name, setName] = useState('');
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,9 +37,6 @@ const NewExpenseCategoryModal = ({ show, handleClose, onCategoryCreated }) => {
 
       // Display success message
       setSuccess('Expense category created successfully!');
-
-      // Pass the new category back to the parent component
-      onCategoryCreated(data);
 
       // Close the modal after a delay
       setTimeout(() => {

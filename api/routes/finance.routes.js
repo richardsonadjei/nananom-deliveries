@@ -1,5 +1,5 @@
 import express from 'express';
-import { createExpense, createExpenseCategory, createIncome, deleteExpense, deleteExpenseCategory, deleteIncome, getAllExpenseCategories, getAllExpenses, getAllIncomesAndExpenses, getExpenseById, getExpenseCategoryById, getIncomeById, getIncomes, updateExpense, updateExpenseCategory, updateIncome } from '../controllers/finance.controller.js';
+import { createExpense, createExpenseCategory, createIncome, createTransfer, deleteExpense, deleteExpenseCategory, deleteIncome, deleteTransfer, getAllExpenseCategories, getAllExpenses, getAllIncomesAndExpenses, getAllTransfers, getExpenseById, getExpenseCategoryById, getIncomeById, getIncomes, getTransferById, updateExpense, updateExpenseCategory, updateIncome, updateTransfer } from '../controllers/finance.controller.js';
 
 
 const financeRouter = express.Router();
@@ -41,5 +41,21 @@ financeRouter.put('/income/:id', updateIncome);
 financeRouter.delete('/income/:id', deleteIncome);
 
 financeRouter.get('/incomes-expenses', getAllIncomesAndExpenses);
+
+// Create a new transfer
+financeRouter.post('/transfers', createTransfer);
+
+// Get all transfers
+financeRouter.get('/transfers', getAllTransfers);
+
+// Get a single transfer by ID
+financeRouter.get('/transfers/:id', getTransferById);
+
+// Update a transfer
+financeRouter.put('/transfers/:id', updateTransfer);
+
+// Delete a transfer
+financeRouter.delete('/transfers/:id', deleteTransfer);
+
 
 export default financeRouter;

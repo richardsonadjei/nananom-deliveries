@@ -1,6 +1,7 @@
 import Expense from "../models/expense.model.js";
 import ExpenseCategory from "../models/expenseCategory.model.js";
 import Income from "../models/income.model.js";
+import Transfer from "../models/transfers.model.js";
 
 
 // Create a new expense category
@@ -270,5 +271,107 @@ export const getAllIncomesAndExpenses = async (req, res) => {
   } catch (error) {
     console.error('Error fetching incomes and expenses:', error);
     res.status(500).json({ message: 'Error fetching incomes and expenses' });
+  }
+};
+
+
+
+export const createTransfer = async (req, res) => {
+  const session = await Transfer.startSession();
+  session.startTransaction();
+
+  try {
+    // Create and save the new transfer
+    const transfer = new Transfer(req.body);
+    await transfer.save({ session });
+
+    // Find the "Transfers" expense category
+    const transferCategory = await ExpenseCategory.findOne({ name: 'Transfers' });
+    if (!transferCategory) {
+      throw new Error('Transfers expense category not found');
+    }
+
+    // Construct the notes based on payment method
+    let expenseNotes = `Transfer expense for transfer: ${transfer._id}`;
+    if (transfer.paymentMethod === 'Momo' && transfer.momoNumber) {
+      expenseNotes = `Transferred funds to Momo number: ${transfer.momoNumber}`;
+    }
+
+    // Create and save the corresponding expense
+    const newExpense = new Expense({
+      amount: transfer.amount,
+      category: transferCategory._id,
+      motorbike: transfer.motorbike,
+      paymentMethod: transfer.paymentMethod,
+      notes: expenseNotes,  // Updated notes to include Momo number if applicable
+      date: transfer.createdAt,
+      time: transfer.createdAt.toTimeString().split(' ')[0], // Extracts time from createdAt
+      recordedBy: transfer.recordedBy,
+    });
+    await newExpense.save({ session });
+
+    // Commit the transaction
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).json({ 
+      transfer,
+      message: 'Transfer created and corresponding expense recorded successfully'
+    });
+  } catch (error) {
+    // If an error occurred, abort the transaction
+    await session.abortTransaction();
+    session.endSession();
+    res.status(400).json({ message: error.message });
+  }
+};
+
+
+// Get all transfers
+export const getAllTransfers = async (req, res) => {
+  try {
+    const transfers = await Transfer.find().populate('motorbike');
+    res.status(200).json(transfers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Get a single transfer by ID
+export const getTransferById = async (req, res) => {
+  try {
+    const transfer = await Transfer.findById(req.params.id).populate('motorbike');
+    if (!transfer) {
+      return res.status(404).json({ message: 'Transfer not found' });
+    }
+    res.status(200).json(transfer);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Update a transfer
+export const updateTransfer = async (req, res) => {
+  try {
+    const transfer = await Transfer.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!transfer) {
+      return res.status(404).json({ message: 'Transfer not found' });
+    }
+    res.status(200).json(transfer);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Delete a transfer
+export const deleteTransfer = async (req, res) => {
+  try {
+    const transfer = await Transfer.findByIdAndDelete(req.params.id);
+    if (!transfer) {
+      return res.status(404).json({ message: 'Transfer not found' });
+    }
+    res.status(200).json({ message: 'Transfer deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

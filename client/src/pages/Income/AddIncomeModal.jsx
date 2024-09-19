@@ -28,7 +28,7 @@ const IncomeModal = ({ show, handleClose }) => {
         const sortedMotorbikes = data.sort((a, b) => a.model.localeCompare(b.model));
         setMotorbikes(
           sortedMotorbikes.map((motorbike) => ({
-            label: `${motorbike.model} - ${motorbike.registrationNumber}`,
+            label: `${motorbike.registrationNumber}`,
             value: motorbike._id, // Use the motorbike ID
           }))
         );

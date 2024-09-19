@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col } from 'react-bootstrap';
 
-
 // Utility function to get the date range for the current week
 const getCurrentWeekRange = () => {
   const now = new Date();
@@ -27,13 +26,30 @@ const getCurrentMonthRange = () => {
   return `${formatDate(firstDayOfMonth)} - ${formatDate(lastDayOfMonth)}`;
 };
 
-const BalanceSummary = () => {
-  const [totalIncomeWeek, setTotalIncomeWeek] = useState(0);
-  const [totalExpenseWeek, setTotalExpenseWeek] = useState(0);
-  const [totalIncomeMonth, setTotalIncomeMonth] = useState(0);
-  const [totalExpenseMonth, setTotalExpenseMonth] = useState(0);
+// Group transactions by motorbike
+const groupByMotorbike = (transactions) => {
+  const grouped = {};
 
-  // Fetch transactions from the API every second
+  transactions.forEach((transaction) => {
+    const motorbike = transaction.motorbike?.registrationNumber || 'Unknown';
+    if (!grouped[motorbike]) {
+      grouped[motorbike] = { incomes: [], expenses: [] };
+    }
+
+    if (transaction.transactionType === 'Income') {
+      grouped[motorbike].incomes.push(transaction);
+    } else if (transaction.transactionType === 'Expense') {
+      grouped[motorbike].expenses.push(transaction);
+    }
+  });
+
+  return grouped;
+};
+
+const BalanceSummary = () => {
+  const [motorbikeData, setMotorbikeData] = useState({});
+
+  // Fetch transactions from the API
   const fetchData = async () => {
     try {
       const response = await fetch('/api/incomes-expenses');
@@ -47,26 +63,22 @@ const BalanceSummary = () => {
       const incomes = data.incomes || [];
       const expenses = data.expenses || [];
 
-      const totalIncomeThisWeek = incomes
-        .filter((income) => isDateInCurrentWeek(new Date(income.date)))
-        .reduce((acc, income) => acc + income.amount, 0);
+      // Mark the transaction type for better grouping
+      const incomeTransactions = incomes.map((income) => ({
+        ...income,
+        transactionType: 'Income',
+      }));
 
-      const totalExpenseThisWeek = expenses
-        .filter((expense) => isDateInCurrentWeek(new Date(expense.date)))
-        .reduce((acc, expense) => acc + expense.amount, 0);
+      const expenseTransactions = expenses.map((expense) => ({
+        ...expense,
+        transactionType: 'Expense',
+      }));
 
-      const totalIncomeThisMonth = incomes
-        .filter((income) => isDateInCurrentMonth(new Date(income.date)))
-        .reduce((acc, income) => acc + income.amount, 0);
+      const allTransactions = [...incomeTransactions, ...expenseTransactions];
 
-      const totalExpenseThisMonth = expenses
-        .filter((expense) => isDateInCurrentMonth(new Date(expense.date)))
-        .reduce((acc, expense) => acc + expense.amount, 0);
-
-      setTotalIncomeWeek(totalIncomeThisWeek);
-      setTotalExpenseWeek(totalExpenseThisWeek);
-      setTotalIncomeMonth(totalIncomeThisMonth);
-      setTotalExpenseMonth(totalExpenseThisMonth);
+      // Group transactions by motorbike
+      const groupedMotorbikeData = groupByMotorbike(allTransactions);
+      setMotorbikeData(groupedMotorbikeData);
     } catch (error) {
       console.error('Error fetching income and expense data:', error);
     }
@@ -74,43 +86,63 @@ const BalanceSummary = () => {
 
   useEffect(() => {
     fetchData();
-    const intervalId = setInterval(fetchData, 1000);
+    const intervalId = setInterval(fetchData, 1000); // Update every second
 
     return () => clearInterval(intervalId);
   }, []);
 
-  const calculateBalance = (income, expenses) => income - expenses;
+  const calculateTotal = (transactions, filterFunction) => {
+    return transactions
+      .filter((transaction) => filterFunction(new Date(transaction.date)))
+      .reduce((acc, transaction) => acc + transaction.amount, 0);
+  };
 
   return (
     <div className="balance-summary">
       <Row>
-        <Col xs={12} md={6} className="mb-4">
-          <div className="summary-card weekly-summary">
-            <div className="summary-header">
-              <h5>Weekly Summary</h5>
-              <span>{getCurrentWeekRange()}</span>
-            </div>
-            <div className="summary-table">
-              <div>Income</div><div>{totalIncomeWeek.toLocaleString()}</div>
-              <div>Expense</div><div className="text-danger">{totalExpenseWeek.toLocaleString()}</div>
-              <div>Balance</div><div>{calculateBalance(totalIncomeWeek, totalExpenseWeek).toLocaleString()}</div>
-            </div>
-          </div>
-        </Col>
+        {Object.keys(motorbikeData).map((motorbike, index) => {
+          const incomes = motorbikeData[motorbike].incomes;
+          const expenses = motorbikeData[motorbike].expenses;
 
-        <Col xs={12} md={6} className="mb-4">
-          <div className="summary-card monthly-summary">
-            <div className="summary-header">
-              <h5>Monthly Summary</h5>
-              <span>{getCurrentMonthRange()}</span>
-            </div>
-            <div className="summary-table">
-              <div>Income</div><div>{totalIncomeMonth.toLocaleString()}</div>
-              <div>Expense</div><div className="text-danger">{totalExpenseMonth.toLocaleString()}</div>
-              <div>Balance</div><div>{calculateBalance(totalIncomeMonth, totalExpenseMonth).toLocaleString()}</div>
-            </div>
-          </div>
-        </Col>
+          const totalIncomeWeek = calculateTotal(incomes, isDateInCurrentWeek);
+          const totalExpenseWeek = calculateTotal(expenses, isDateInCurrentWeek);
+          const totalIncomeMonth = calculateTotal(incomes, isDateInCurrentMonth);
+          const totalExpenseMonth = calculateTotal(expenses, isDateInCurrentMonth);
+
+          return (
+            <Col xs={12} md={6} className="mb-4" key={index}>
+              <div className={`summary-card motorbike-summary ${index % 2 === 0 ? 'weekly-summary' : 'monthly-summary'}`}>
+                {/* Motorbike and Weekly Summary */}
+                <div className="summary-header">
+                  <h5>Motorbike: {motorbike}</h5>
+                  <span>{getCurrentWeekRange()}</span>
+                </div>
+                <div className="summary-table">
+                  {/* Weekly Summary: Headers and Values Below */}
+                  <Row>
+                    <Col><strong>Weekly Income</strong><div>{totalIncomeWeek.toLocaleString()}</div></Col>
+                    <Col><strong>Weekly Expense</strong><div className="text-danger">{totalExpenseWeek.toLocaleString()}</div></Col>
+                    <Col><strong>Weekly Balance</strong><div>{(totalIncomeWeek - totalExpenseWeek).toLocaleString()}</div></Col>
+                  </Row>
+                </div>
+
+                {/* Monthly Summary */}
+                <div className="summary-header mt-3">
+                  <h5>Monthly Summary</h5>
+                  <span>{getCurrentMonthRange()}</span>
+                </div>
+                <div className="summary-table">
+                  {/* Monthly Summary: Headers and Values Below */}
+                  <Row>
+                    <Col><strong>Monthly Income</strong><div>{totalIncomeMonth.toLocaleString()}</div></Col>
+                    <Col><strong>Monthly Expense</strong><div className="text-danger">{totalExpenseMonth.toLocaleString()}</div></Col>
+                    <Col><strong>Monthly Balance</strong><div>{(totalIncomeMonth - totalExpenseMonth).toLocaleString()}</div></Col>
+                  </Row>
+                </div>
+              </div>
+            </Col>
+          );
+        })}
       </Row>
     </div>
   );
@@ -119,7 +151,8 @@ const BalanceSummary = () => {
 const isDateInCurrentWeek = (date) => {
   const now = new Date();
   const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-  const endOfWeek = new Date(now.setDate(startOfWeek.getDate() + 6));
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
   return date >= startOfWeek && date <= endOfWeek;
 };
 
