@@ -68,7 +68,7 @@ const Home = () => {
       <BalanceSummary />
       <RecentTransactions />
 
-      {/* Expense Modal */}
+      
       <ExpenseModal
         show={showExpenseModal}
         handleClose={handleCloseExpense}
