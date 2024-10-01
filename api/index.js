@@ -12,6 +12,7 @@ import financialRouter from './routes/profitLoss.router.js';
 import momoDepositsRouter from './routes/momoDeposits.routes.js';
 import bikeRouter from './routes/bike.routes.js';
 import financeRouter from './routes/finance.routes.js';
+import hRRouter from './routes/hr.routes.js';
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use('/api/', financialRouter);
 app.use('/api/', momoDepositsRouter);
 app.use('/api/', bikeRouter);
 app.use('/api/', financeRouter);
+app.use('/api/', hRRouter);
 
 
 app.use(express.static(path.join(__dirname, '/client/dist')));

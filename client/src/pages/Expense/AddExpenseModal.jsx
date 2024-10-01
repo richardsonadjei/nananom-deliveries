@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, InputGroup, Row, Col } from 'react-bootstrap';
-import { FaCalendarAlt, FaClock, FaMotorcycle, FaStickyNote, FaWallet, FaMoneyBill } from 'react-icons/fa';
+import { FaCalendarAlt, FaClock, FaMoneyBill, FaStickyNote, FaWallet } from 'react-icons/fa';
 import NewExpenseCategoryModal from '../finance/expensecategory';
 import Select from 'react-select';
 import { useSelector } from 'react-redux';
@@ -15,6 +15,13 @@ const ExpenseModal = ({ show, handleClose }) => {
   const [categories, setCategories] = useState([]);
   const [motorbikes, setMotorbikes] = useState([]);
   const [selectedMotorbike, setSelectedMotorbike] = useState(null);
+  const [employees, setEmployees] = useState([]);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [payPeriodStart, setPayPeriodStart] = useState('');
+  const [payPeriodEnd, setPayPeriodEnd] = useState('');
+  const [baseSalary, setBaseSalary] = useState('');
+  const [otherBenefits, setOtherBenefits] = useState([{ category: '', amount: '' }]);
+  const [deductions, setDeductions] = useState([{ category: '', amount: '' }]);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -46,13 +53,10 @@ const ExpenseModal = ({ show, handleClose }) => {
       try {
         const response = await fetch('/api/motorbikes');
         const data = await response.json();
-        const sortedMotorbikes = data.sort((a, b) => String(a.model).localeCompare(String(b.model)));
-        setMotorbikes(
-          sortedMotorbikes.map((motorbike) => ({
-            label: ` ${motorbike.registrationNumber}`,
-            value: motorbike._id,
-          }))
-        );
+        setMotorbikes(data.map((motorbike) => ({
+          label: `${motorbike.registrationNumber}`,
+          value: motorbike._id,
+        })));
       } catch (error) {
         console.error('Error fetching motorbikes:', error);
       }
@@ -60,6 +64,43 @@ const ExpenseModal = ({ show, handleClose }) => {
 
     fetchMotorbikes();
   }, []);
+
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const response = await fetch('/api/employees');
+        const data = await response.json();
+        setEmployees(data.map((employee) => ({
+          label: `${employee.firstName} ${employee.lastName}`,
+          value: employee._id,
+        })));
+      } catch (error) {
+        console.error('Error fetching employees:', error);
+      }
+    };
+
+    fetchEmployees();
+  }, []);
+
+  const handleOtherBenefitsChange = (index, field, value) => {
+    const updatedBenefits = [...otherBenefits];
+    updatedBenefits[index][field] = value;
+    setOtherBenefits(updatedBenefits);
+  };
+
+  const addOtherBenefit = () => {
+    setOtherBenefits([...otherBenefits, { category: '', amount: '' }]);
+  };
+
+  const handleDeductionsChange = (index, field, value) => {
+    const updatedDeductions = [...deductions];
+    updatedDeductions[index][field] = value;
+    setDeductions(updatedDeductions);
+  };
+
+  const addDeduction = () => {
+    setDeductions([...deductions, { category: '', amount: '' }]);
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -75,6 +116,12 @@ const ExpenseModal = ({ show, handleClose }) => {
       date,
       time,
       recordedBy: currentUser,
+      employee: category?.label === 'Pay And Allowance' ? selectedEmployee?.value : null,
+      payPeriodStart: category?.label === 'Pay And Allowance' ? payPeriodStart : null,
+      payPeriodEnd: category?.label === 'Pay And Allowance' ? payPeriodEnd : null,
+      baseSalary: category?.label === 'Pay And Allowance' ? baseSalary : null,
+      otherBenefits: category?.label === 'Pay And Allowance' ? otherBenefits : [],
+      deductions: category?.label === 'Pay And Allowance' ? deductions : [],
     };
 
     try {
@@ -90,10 +137,10 @@ const ExpenseModal = ({ show, handleClose }) => {
         throw new Error('Failed to save expense');
       }
 
-      const result = await response.json();
-      
       window.alert('Expense saved successfully!');
+      handleClose();
 
+      // Reset form fields
       setAmount('');
       setCategory(null);
       setSelectedMotorbike(null);
@@ -101,8 +148,12 @@ const ExpenseModal = ({ show, handleClose }) => {
       setNotes('');
       setDate(new Date().toISOString().split('T')[0]);
       setTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-
-      handleClose();
+      setSelectedEmployee(null);
+      setPayPeriodStart('');
+      setPayPeriodEnd('');
+      setBaseSalary('');
+      setOtherBenefits([{ category: '', amount: '' }]);
+      setDeductions([{ category: '', amount: '' }]);
     } catch (error) {
       setError(error.message);
     } finally {
@@ -111,9 +162,9 @@ const ExpenseModal = ({ show, handleClose }) => {
   };
 
   const handleCategorySave = (newCategory) => {
-    setCategories(prevCategories => [
+    setCategories((prevCategories) => [
       ...prevCategories,
-      { label: newCategory.name, value: newCategory._id }
+      { label: newCategory.name, value: newCategory._id },
     ]);
     setCategory({ label: newCategory.name, value: newCategory._id });
     setShowCategoryModal(false);
@@ -131,7 +182,7 @@ const ExpenseModal = ({ show, handleClose }) => {
             <Row>
               <Col md={6}>
                 <Form.Group controlId="amount">
-                  <Form.Label className="text-danger">Expense</Form.Label>
+                  <Form.Label>Expense</Form.Label>
                   <InputGroup>
                     <InputGroup.Text>
                       <FaMoneyBill />
@@ -164,6 +215,138 @@ const ExpenseModal = ({ show, handleClose }) => {
               </Col>
             </Row>
 
+            {category?.label === 'Pay And Allowance' && (
+              <>
+                <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="employee">
+                      <Form.Label>Employee</Form.Label>
+                      <Select
+                        value={selectedEmployee}
+                        onChange={(selectedOption) => setSelectedEmployee(selectedOption)}
+                        options={employees}
+                        isClearable
+                        isSearchable
+                        placeholder="Select Employee"
+                      />
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group controlId="baseSalary">
+                      <Form.Label>Base Salary</Form.Label>
+                      <InputGroup>
+                        <Form.Control
+                          type="number"
+                          placeholder="Enter Base Salary"
+                          value={baseSalary}
+                          onChange={(e) => setBaseSalary(e.target.value)}
+                          required
+                        />
+                      </InputGroup>
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md={6}>
+                    <Form.Group controlId="payPeriodStart">
+                      <Form.Label>Pay Period Start</Form.Label>
+                      <InputGroup>
+                        <Form.Control
+                          type="date"
+                          value={payPeriodStart}
+                          onChange={(e) => setPayPeriodStart(e.target.value)}
+                          required
+                        />
+                        <InputGroup.Text>
+                          <FaCalendarAlt />
+                        </InputGroup.Text>
+                      </InputGroup>
+                    </Form.Group>
+                  </Col>
+                  <Col md={6}>
+                    <Form.Group controlId="payPeriodEnd">
+                      <Form.Label>Pay Period End</Form.Label>
+                      <InputGroup>
+                        <Form.Control
+                          type="date"
+                          value={payPeriodEnd}
+                          onChange={(e) => setPayPeriodEnd(e.target.value)}
+                          required
+                        />
+                        <InputGroup.Text>
+                          <FaCalendarAlt />
+                        </InputGroup.Text>
+                      </InputGroup>
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md={12}>
+                    <Form.Group controlId="otherBenefits">
+                      <Form.Label>Other Benefits</Form.Label>
+                      {otherBenefits.map((benefit, index) => (
+                        <Row key={index} className="mb-2">
+                          <Col md={6}>
+                            <Form.Control
+                              type="text"
+                              placeholder="Benefit Category"
+                              value={benefit.category}
+                              onChange={(e) => handleOtherBenefitsChange(index, 'category', e.target.value)}
+                            />
+                          </Col>
+                          <Col md={6}>
+                            <Form.Control
+                              type="number"
+                              placeholder="Amount"
+                              value={benefit.amount}
+                              onChange={(e) => handleOtherBenefitsChange(index, 'amount', e.target.value)}
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                      <Button variant="link" onClick={addOtherBenefit}>
+                        Add Another Benefit
+                      </Button>
+                    </Form.Group>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col md={12}>
+                    <Form.Group controlId="deductions">
+                      <Form.Label>Deductions</Form.Label>
+                      {deductions.map((deduction, index) => (
+                        <Row key={index} className="mb-2">
+                          <Col md={6}>
+                            <Form.Control
+                              type="text"
+                              placeholder="Deduction Category"
+                              value={deduction.category}
+                              onChange={(e) => handleDeductionsChange(index, 'category', e.target.value)}
+                            />
+                          </Col>
+                          <Col md={6}>
+                            <Form.Control
+                              type="number"
+                              placeholder="Amount"
+                              value={deduction.amount}
+                              onChange={(e) => handleDeductionsChange(index, 'amount', e.target.value)}
+                            />
+                          </Col>
+                        </Row>
+                      ))}
+                      <Button variant="link" onClick={addDeduction}>
+                        Add Another Deduction
+                      </Button>
+                    </Form.Group>
+                  </Col>
+                </Row>
+              </>
+            )}
+
+            {/* Additional Form Fields */}
             <Row>
               <Col md={6}>
                 <Form.Group controlId="motorbike">

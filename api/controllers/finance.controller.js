@@ -1,6 +1,7 @@
 import Expense from "../models/expense.model.js";
 import ExpenseCategory from "../models/expenseCategory.model.js";
 import Income from "../models/income.model.js";
+import Payroll from "../models/payRoll.model.js";
 import Transfer from "../models/transfers.model.js";
 
 
@@ -71,11 +72,31 @@ export const deleteExpenseCategory = async (req, res) => {
 };
 
 
+
+
+
 // Create a new expense
+
 export const createExpense = async (req, res) => {
-  const { amount, category, motorbike, paymentMethod, notes, date, time, recordedBy } = req.body;
+  const { 
+    amount, 
+    category, 
+    motorbike, 
+    paymentMethod, 
+    notes, 
+    date, 
+    time, 
+    recordedBy, 
+    employee, 
+    payPeriodStart, 
+    payPeriodEnd, 
+    baseSalary, 
+    otherBenefits = [], 
+    deductions = [] 
+  } = req.body;
 
   try {
+    // Create the expense record
     const expense = new Expense({
       amount,
       category,
@@ -88,11 +109,45 @@ export const createExpense = async (req, res) => {
     });
 
     const savedExpense = await expense.save();
+
+    // Fetch the "Pay And Allowance" category ID to compare
+    const payAndAllowanceCategory = await ExpenseCategory.findOne({ name: 'Pay And Allowance' });
+
+    if (!payAndAllowanceCategory) {
+      return res.status(400).json({ message: 'Pay And Allowance category not found.' });
+    }
+
+    // If the category matches the 'Pay And Allowance' category ID, also create a payroll record
+    if (category === String(payAndAllowanceCategory._id)) {
+      if (!employee || !payPeriodStart || !payPeriodEnd || !baseSalary) {
+        return res.status(400).json({ message: 'Employee, pay period, and base salary are required for Pay And Allowance expenses.' });
+      }
+
+      const payroll = new Payroll({
+        employee, // Reference to Employee model
+        payPeriodStart,
+        payPeriodEnd,
+        baseSalary,
+        otherBenefits: otherBenefits.map((benefit) => ({
+          category: benefit.category,
+          amount: benefit.amount,
+        })),
+        deductions: deductions.map((deduction) => ({
+          category: deduction.category,
+          amount: deduction.amount,
+        })),
+      });
+
+      await payroll.save();
+    }
+
     res.status(201).json(savedExpense); // Return the newly created expense
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
+
 
 
 // Get all expenses
@@ -507,3 +562,75 @@ export const  getExpensesByMotorbikeAndPeriod= async (req, res) => {
   }
 };
 
+
+
+
+// Get all payroll records
+export const getAllPayrolls = async (req, res) => {
+  try {
+    const payrolls = await Payroll.find().populate('employee');
+    res.status(200).json(payrolls);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Get a single payroll record by ID
+export const getPayrollById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const payroll = await Payroll.findById(id).populate('employee');
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll record not found.' });
+    }
+    res.status(200).json(payroll);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Update a payroll record by ID
+export const updatePayroll = async (req, res) => {
+  const { id } = req.params;
+  const { payPeriodStart, payPeriodEnd, baseSalary, otherBenefits, deductions } = req.body;
+
+  try {
+    const payroll = await Payroll.findById(id);
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll record not found.' });
+    }
+
+    // Update the payroll fields
+    if (payPeriodStart) payroll.payPeriodStart = payPeriodStart;
+    if (payPeriodEnd) payroll.payPeriodEnd = payPeriodEnd;
+    if (baseSalary) payroll.baseSalary = baseSalary;
+    if (otherBenefits) payroll.otherBenefits = otherBenefits;
+    if (deductions) payroll.deductions = deductions;
+
+    // Recalculate the net pay
+    const totalBenefits = payroll.otherBenefits.reduce((acc, benefit) => acc + benefit.amount, 0);
+    const totalDeductions = payroll.deductions.reduce((acc, deduction) => acc + deduction.amount, 0);
+    payroll.netPay = (payroll.baseSalary + totalBenefits) - totalDeductions;
+
+    const updatedPayroll = await payroll.save();
+    res.status(200).json(updatedPayroll);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+// Delete a payroll record by ID
+export const deletePayroll = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const payroll = await Payroll.findByIdAndDelete(id);
+    if (!payroll) {
+      return res.status(404).json({ message: 'Payroll record not found.' });
+    }
+    res.status(200).json({ message: 'Payroll record deleted successfully.' });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};

@@ -24,6 +24,8 @@ import IncomeByPeriod from './pages/reports-new/allreports/IncomeByPeriod';
 import { MotorbikeProvider } from './pages/reports-new/allreports/MotorBikeContext';
 import AllExpenseReport from './pages/reports-new/allreports/expenseReports/AllExpenseReport';
 import ExpenseByPeriod from './pages/reports-new/allreports/expenseReports/ExpenseByPeriod';
+import AllEmployeesReport from './pages/HumanResource/EmployeeList';
+import AllPayrollsReport from './pages/HumanResource/PayRoll';
 
 
 export default function App() {
@@ -54,6 +56,8 @@ export default function App() {
             <Route path='/all-bike-income-by-period' element={<IncomeByPeriod />} />
             <Route path='/all-bike-expense' element={<AllExpenseReport/>} />
             <Route path='/all-bike-expense-by-period' element={<ExpenseByPeriod/>} />
+            <Route path='/employee-list' element={<AllEmployeesReport/>} />
+            <Route path='/payrolls' element={<AllPayrollsReport/>} />
           </Route>
         </Routes>
       </MotorbikeProvider>
