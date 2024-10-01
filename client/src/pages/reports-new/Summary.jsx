@@ -1,63 +1,123 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Line } from 'react-chartjs-2';
+import Chart from 'chart.js/auto';
 
-const ReportSummary = ({ summary }) => {
-  const navigate = useNavigate();
+const AccountingSummary = ({ motorbikeId }) => {
+  const [chartData, setChartData] = useState({
+    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    datasets: [
+      {
+        label: 'Income',
+        data: new Array(12).fill(0), // Placeholder for income data
+        borderColor: 'green',
+        backgroundColor: 'green',
+        fill: false,
+        pointRadius: 5,
+      },
+      {
+        label: 'Expenses',
+        data: new Array(12).fill(0), // Placeholder for expenses data
+        borderColor: 'red',
+        backgroundColor: 'red',
+        fill: false,
+        pointRadius: 5,
+      },
+    ],
+  });
 
-  const containerStyle = {
-    padding: '16px',
-    backgroundColor: '#2d3748', // Matches the gray-800 Tailwind color
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    color: 'white',
-    textAlign: 'center',
+  const fetchTransactionData = async () => {
+    try {
+      const response = await fetch(`/api/incomes-expenses?motorbikeId=${motorbikeId}`);
+      const data = await response.json();
+
+      // Initialize arrays for monthly income and expenses totals
+      const incomeMonthlyTotals = new Array(12).fill(0);
+      const expensesMonthlyTotals = new Array(12).fill(0);
+
+      // Calculate monthly income totals for the selected motorbike
+      data.incomes.forEach((income) => {
+        if (income.motorbike._id === motorbikeId) {
+          const incomeDate = new Date(income.date);
+          const month = incomeDate.getUTCMonth(); // Get month (0-11)
+          incomeMonthlyTotals[month] += income.amount; // Sum income for each month
+        }
+      });
+
+      // Calculate monthly expenses totals for the selected motorbike
+      data.expenses.forEach((expense) => {
+        if (expense.motorbike._id === motorbikeId) {
+          const expenseDate = new Date(expense.date);
+          const month = expenseDate.getUTCMonth(); // Get month (0-11)
+          expensesMonthlyTotals[month] += expense.amount; // Sum expenses for each month
+        }
+      });
+
+      // Update the chart with new data
+      setChartData({
+        ...chartData,
+        datasets: [
+          {
+            ...chartData.datasets[0],
+            data: incomeMonthlyTotals,
+          },
+          {
+            ...chartData.datasets[1],
+            data: expensesMonthlyTotals,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error('Error fetching transaction data:', error);
+    }
   };
 
-  const headerStyle = {
-    fontSize: '1.25rem',
-    fontWeight: 'bold',
-    marginBottom: '16px',
-  };
-
-  const gridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)', // 4 equal columns
-    gap: '16px',
-    textAlign: 'center',
-  };
-
-  const itemStyle = {
-    marginBottom: '8px',
-    cursor: 'pointer', // Make it clear that these are clickable
-  };
-
-  const handleClick = (path) => {
-    navigate(path);
-  };
+  useEffect(() => {
+    if (motorbikeId) {
+      // Fetch data when a motorbike is selected
+      fetchTransactionData();
+    }
+  }, [motorbikeId]);
 
   return (
-    <div style={containerStyle}>
-      <h5 style={headerStyle}>Summary</h5>
-      <div style={gridStyle}>
-        <div onClick={() => handleClick('/income')} style={itemStyle}>
-          <strong>Total Income</strong>
-          <div>₵{summary.income.toFixed(2)}</div>
-        </div>
-        <div onClick={() => handleClick('/expenses')} style={itemStyle}>
-          <strong>Total Expenses</strong>
-          <div>₵{summary.expenses.toFixed(2)}</div>
-        </div>
-        <div onClick={() => handleClick('/transfers')} style={itemStyle}>
-          <strong>Total Transfers</strong>
-          <div>₵{summary.transfers.toFixed(2)}</div>
-        </div>
-        <div>
-          <strong style={itemStyle}>Net Balance</strong>
-          <div>₵{(summary.income - summary.expenses).toFixed(2)}</div>
-        </div>
-      </div>
+    <div style={{ height: '300px' }}>
+      <Line 
+        data={chartData}
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                color: 'white', // Make legend text white
+              },
+            },
+            tooltip: {
+              bodyColor: 'white', // Tooltip text color
+              titleColor: 'white',
+            },
+          },
+          scales: {
+            x: {
+              ticks: {
+                color: 'white', // Make x-axis labels white
+              },
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                color: 'white', // Make y-axis labels white
+                callback: function(value) {
+                  return value.toLocaleString(); // Format y-axis values with commas
+                },
+              },
+            },
+          },
+        }}
+      />
     </div>
   );
 };
 
-export default ReportSummary;
+export default AccountingSummary;

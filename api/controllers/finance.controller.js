@@ -291,19 +291,13 @@ export const createTransfer = async (req, res) => {
       throw new Error('Transfers expense category not found');
     }
 
-    // Construct the notes based on payment method
-    let expenseNotes = `Transfer expense for transfer: ${transfer._id}`;
-    if (transfer.paymentMethod === 'Momo' && transfer.momoNumber) {
-      expenseNotes = `Transferred funds to Momo number: ${transfer.momoNumber}`;
-    }
-
     // Create and save the corresponding expense
     const newExpense = new Expense({
       amount: transfer.amount,
       category: transferCategory._id,
       motorbike: transfer.motorbike,
       paymentMethod: transfer.paymentMethod,
-      notes: expenseNotes,  // Updated notes to include Momo number if applicable
+      notes: transfer.notes, // Use the notes provided by the user
       date: transfer.createdAt,
       time: transfer.createdAt.toTimeString().split(' ')[0], // Extracts time from createdAt
       recordedBy: transfer.recordedBy,
@@ -325,6 +319,7 @@ export const createTransfer = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
 
 
 // Get all transfers
@@ -375,3 +370,140 @@ export const deleteTransfer = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+
+
+
+// Controller to get all incomes for a particular motorbike
+export const getAllIncomesForBike = async (req, res) => {
+  const { motorbikeId } = req.params;
+
+  try {
+    // Find all incomes that belong to the motorbike with the specified ID
+    const incomes = await Income.find({ motorbike: motorbikeId }).populate('motorbike', 'registrationNumber model');
+
+    if (!incomes || incomes.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No incomes found for this motorbike.',
+      });
+    }
+
+    // Send the incomes in the response
+    res.status(200).json({
+      success: true,
+      incomes,
+    });
+  } catch (error) {
+    console.error('Error fetching incomes:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching incomes for the motorbike.',
+    });
+  }
+};
+
+
+
+
+// Controller to get all incomes for a particular motorbike within a specified period
+export const getAllIncomesForBikeWithinPeriod = async (req, res) => {
+  const { motorbikeId } = req.params;
+  const { startDate, endDate } = req.query;
+
+  try {
+    // Parse startDate and endDate strings into Date objects in UTC format
+    const parsedStartDate = new Date(startDate + 'T00:00:00Z'); // Assuming startDate is in YYYY-MM-DD format
+    const parsedEndDate = new Date(endDate + 'T23:59:59.999Z'); // Assuming endDate is in YYYY-MM-DD format
+
+    // Validate that both startDate and endDate are valid dates
+    if (isNaN(parsedStartDate) || isNaN(parsedEndDate)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid startDate or endDate. Please provide valid dates in YYYY-MM-DD format.',
+      });
+    }
+
+    // Find all incomes that belong to the motorbike within the specified period
+    const incomes = await Income.find({
+      motorbike: motorbikeId,
+      date: {
+        $gte: parsedStartDate,
+        $lte: parsedEndDate,
+      },
+    }).populate('motorbike', 'registrationNumber model');
+
+    if (!incomes || incomes.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No incomes found for this motorbike within the specified period.',
+      });
+    }
+
+    // Send the incomes in the response
+    res.status(200).json({
+      success: true,
+      incomes,
+    });
+  } catch (error) {
+    console.error('Error fetching incomes:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching incomes for the motorbike within the specified period.',
+    });
+  }
+};
+
+
+
+
+
+// Controller to fetch all expense records for a particular motorbike
+export const getExpensesByMotorbike = async (req, res) => {
+  try {
+    const { motorbikeId } = req.params;
+
+    // Find all expenses that are linked to the given motorbike ID
+    const expenses = await Expense.find({ motorbike: motorbikeId }).populate('category', 'name'); // Populate category to get its name
+
+    if (!expenses || expenses.length === 0) {
+      return res.status(404).json({ message: 'No expenses found for this motorbike' });
+    }
+
+    res.status(200).json(expenses);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching expenses', error: error.message });
+  }
+};
+
+
+
+// Controller to fetch all expense records for a particular motorbike within a period
+export const  getExpensesByMotorbikeAndPeriod= async (req, res) => {
+  try {
+    const { motorbikeId } = req.params;
+    const { startDate, endDate } = req.query;
+
+    // Parse startDate and endDate strings into Date objects in UTC format
+    const parsedStartDate = new Date(startDate + 'T00:00:00Z'); // Assuming startDate is in YYYY-MM-DD format
+    const parsedEndDate = new Date(endDate + 'T23:59:59.999Z'); // Assuming endDate is in YYYY-MM-DD format
+
+    // Find all expenses within the given date range for the specific motorbike
+    const expenses = await Expense.find({
+      motorbike: motorbikeId,
+      date: {
+        $gte: parsedStartDate,
+        $lte: parsedEndDate,
+      },
+    }).populate('category', 'name'); // Populate category to get its name
+
+    if (!expenses || expenses.length === 0) {
+      return res.status(404).json({ message: 'No expenses found for this motorbike within the specified period' });
+    }
+
+    res.status(200).json(expenses);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching expenses', error: error.message });
+  }
+};
+

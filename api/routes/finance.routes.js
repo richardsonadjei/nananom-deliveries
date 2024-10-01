@@ -1,5 +1,5 @@
 import express from 'express';
-import { createExpense, createExpenseCategory, createIncome, createTransfer, deleteExpense, deleteExpenseCategory, deleteIncome, deleteTransfer, getAllExpenseCategories, getAllExpenses, getAllIncomesAndExpenses, getAllTransfers, getExpenseById, getExpenseCategoryById, getIncomeById, getIncomes, getTransferById, updateExpense, updateExpenseCategory, updateIncome, updateTransfer } from '../controllers/finance.controller.js';
+import { createExpense, createExpenseCategory, createIncome, createTransfer, deleteExpense, deleteExpenseCategory, deleteIncome, deleteTransfer, getAllExpenseCategories, getAllExpenses, getAllIncomesAndExpenses, getAllIncomesForBike, getAllIncomesForBikeWithinPeriod, getAllTransfers, getExpenseById, getExpenseCategoryById, getExpensesByMotorbike, getExpensesByMotorbikeAndPeriod,  getIncomeById, getIncomes, getTransferById, updateExpense, updateExpenseCategory, updateIncome, updateTransfer } from '../controllers/finance.controller.js';
 
 
 const financeRouter = express.Router();
@@ -56,6 +56,8 @@ financeRouter.put('/transfers/:id', updateTransfer);
 
 // Delete a transfer
 financeRouter.delete('/transfers/:id', deleteTransfer);
-
-
+financeRouter.get('/incomes/:motorbikeId', getAllIncomesForBike);
+financeRouter.get('/incomes/:motorbikeId/period', getAllIncomesForBikeWithinPeriod);
+financeRouter.get('/expenses-motorbike/:motorbikeId', getExpensesByMotorbike);
+financeRouter.get('/expenses/motorbike/:motorbikeId/period', getExpensesByMotorbikeAndPeriod);
 export default financeRouter;
