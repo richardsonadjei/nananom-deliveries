@@ -46,8 +46,8 @@ const RecentTransactions = () => {
         );
       }
 
-      // Only show the 5 most recent transactions
-      setTransactions(allTransactions.slice(0, 5));
+      // Set all transactions without limiting to 5
+      setTransactions(allTransactions);
     } catch (error) {
       console.error('Error fetching transactions:', error);
     }
