@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Table } from 'react-bootstrap';
-
 import { useMotorbike } from '../MotorBikeContext';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
@@ -58,9 +57,31 @@ const AllExpenseReport = () => {
     fetchMotorbikeDetails();
   }, [selectedBikeId]);
 
-  // Prepare data for the bar chart
-  const categories = expenses.map((expense) => expense.category.name);
-  const totals = expenses.map((expense) => expense.amount);
+  // Group expenses by category and calculate totals
+  const groupedExpenses = expenses.reduce((acc, expense) => {
+    const { category, amount } = expense;
+    if (!acc[category.name]) {
+      acc[category.name] = { total: 0, items: [] };
+    }
+    acc[category.name].total += amount;
+    acc[category.name].items.push(expense);
+    return acc;
+  }, {});
+
+  // Prepare data for the bar chart using the aggregated totals
+  const categories = Object.keys(groupedExpenses);
+  const totals = categories.map((category) => groupedExpenses[category].total);
+
+  // Assign different colors for each category
+  const colors = [
+    'rgba(75, 192, 192, 0.6)',
+    'rgba(54, 162, 235, 0.6)',
+    'rgba(255, 99, 132, 0.6)',
+    'rgba(255, 206, 86, 0.6)',
+    'rgba(153, 102, 255, 0.6)',
+    'rgba(255, 159, 64, 0.6)',
+    'rgba(0, 128, 128, 0.6)',
+  ];
 
   const chartData = {
     labels: categories,
@@ -68,8 +89,8 @@ const AllExpenseReport = () => {
       {
         label: 'Total Expenses by Category',
         data: totals,
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: colors.slice(0, categories.length), // Assign colors to categories
+        borderColor: colors.map(color => color.replace('0.6', '1')), // Set border color
         borderWidth: 1,
       },
     ],
@@ -106,16 +127,6 @@ const AllExpenseReport = () => {
     },
   };
 
-  // Group expenses by category
-  const groupedExpenses = expenses.reduce((acc, expense) => {
-    const { category } = expense;
-    if (!acc[category.name]) {
-      acc[category.name] = [];
-    }
-    acc[category.name].push(expense);
-    return acc;
-  }, {});
-
   return (
     <Container fluid style={{ padding: 0, width: '100vw', margin: 0, overflowX: 'hidden' }}>
       {/* Include the Sidebar as an off-canvas component */}
@@ -136,10 +147,10 @@ const AllExpenseReport = () => {
             </div>
 
             {/* Render each category's expenses in its own table */}
-            {Object.keys(groupedExpenses).map((categoryName) => (
+            {categories.map((categoryName) => (
               <div key={categoryName} style={{ marginBottom: '40px' }}>
                 <h3 style={{ color: 'white', marginBottom: '15px' }}>
-                  Category: {categoryName}
+                  {categoryName} (Total: Ghc {groupedExpenses[categoryName].total.toLocaleString()})
                 </h3>
                 <Table striped bordered hover variant="dark" responsive>
                   <thead>
@@ -152,7 +163,7 @@ const AllExpenseReport = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {groupedExpenses[categoryName].map((expense) => (
+                    {groupedExpenses[categoryName].items.map((expense) => (
                       <tr key={expense._id}>
                         <td>
                           {new Date(expense.date).toLocaleDateString('en-US', {
