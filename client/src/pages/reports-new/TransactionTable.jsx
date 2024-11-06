@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Dropdown } from 'react-bootstrap';
+import { Table, Dropdown, Modal, Button } from 'react-bootstrap';
 
 const TransactionTable = ({ searchTerm, filter, motorbikeId }) => {
   const [transactions, setTransactions] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   // Fetch transactions from the API for the selected motorbike
   const fetchTransactions = async () => {
@@ -11,22 +13,20 @@ const TransactionTable = ({ searchTerm, filter, motorbikeId }) => {
       const data = await response.json();
 
       if (data.incomes && data.expenses) {
-        // Combine income and expenses into one array and assign the type manually
         const incomeTransactions = data.incomes
-          .filter((item) => item.motorbike._id === motorbikeId) // Filter by selected motorbike
+          .filter((item) => item.motorbike._id === motorbikeId)
           .map((item) => ({
             ...item,
             transactionType: 'Income',
           }));
 
         const expenseTransactions = data.expenses
-          .filter((item) => item.motorbike._id === motorbikeId) // Filter by selected motorbike
+          .filter((item) => item.motorbike._id === motorbikeId)
           .map((item) => ({
             ...item,
             transactionType: 'Expense',
           }));
 
-        // Update state with filtered transactions
         setTransactions([...incomeTransactions, ...expenseTransactions]);
       }
     } catch (error) {
@@ -36,16 +36,38 @@ const TransactionTable = ({ searchTerm, filter, motorbikeId }) => {
 
   useEffect(() => {
     if (motorbikeId) {
-      // Fetch transactions for the selected motorbike
       fetchTransactions();
-
-      // Set an interval to fetch transactions every second (1000 ms)
       const intervalId = setInterval(fetchTransactions, 1000);
-
-      // Cleanup interval when component unmounts or motorbikeId changes
       return () => clearInterval(intervalId);
     }
   }, [motorbikeId]);
+
+  // Show delete modal
+  const handleShowDeleteModal = (transaction) => {
+    setSelectedTransaction(transaction);
+    setShowDeleteModal(true);
+  };
+
+  // Delete transaction
+  const handleDeleteTransaction = async () => {
+    if (selectedTransaction) {
+      const url = selectedTransaction.transactionType === 'Income'
+        ? `/api/income/${selectedTransaction._id}`
+        : `/api/expenses/${selectedTransaction._id}`;
+
+      try {
+        await fetch(url, {
+          method: 'DELETE',
+        });
+        // Refresh transactions after deletion
+        fetchTransactions();
+        setShowDeleteModal(false);
+        setSelectedTransaction(null);
+      } catch (error) {
+        console.error('Error deleting transaction:', error);
+      }
+    }
+  };
 
   const filteredTransactions = transactions
     .filter((transaction) => {
@@ -60,7 +82,7 @@ const TransactionTable = ({ searchTerm, filter, motorbikeId }) => {
         )
       );
     })
-    .sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by date from most recent to oldest
+    .sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
     <div style={{ height: '400px', overflowY: 'scroll' }}>
@@ -73,7 +95,6 @@ const TransactionTable = ({ searchTerm, filter, motorbikeId }) => {
             <th style={{ fontSize: '14px', fontWeight: 'normal' }}>Amount</th>
             <th style={{ fontSize: '14px', fontWeight: 'normal' }}>Notes</th>
             <th style={{ fontSize: '14px', fontWeight: 'normal' }}>Type</th>
-           
             <th style={{ fontSize: '14px', fontWeight: 'normal' }}>Recorded By</th>
             <th style={{ fontSize: '14px', fontWeight: 'normal' }}>Actions</th>
           </tr>
@@ -81,17 +102,14 @@ const TransactionTable = ({ searchTerm, filter, motorbikeId }) => {
         <tbody>
           {filteredTransactions.length > 0 ? (
             filteredTransactions.map((transaction, index) => {
-              // Determine the amount to display
               const amount = transaction.amount !== undefined
                 ? transaction.amount.toFixed(2)
                 : '0.00';
 
-              // Extract category name if `category` is an object
               const category = typeof transaction.category === 'object' && transaction.category !== null
                 ? transaction.category.name
                 : transaction.category;
 
-              // Conditional styling for the amount based on Income or Expense
               const amountStyle = {
                 color: transaction.transactionType === 'Income' ? 'green' : 'red',
                 fontWeight: 'normal',
@@ -118,7 +136,6 @@ const TransactionTable = ({ searchTerm, filter, motorbikeId }) => {
                   <td style={{ fontSize: '13px' }}>{category || 'N/A'}</td>
                   <td style={{ fontSize: '13px' }}>{transaction.paymentMethod || 'N/A'}</td>
                   <td style={amountStyle}>Ghc {amount}</td>
-                 
                   <td style={{ fontSize: '13px' }}>{transaction.notes || 'N/A'}</td>
                   <td>
                     <span style={badgeStyle}>
@@ -133,8 +150,7 @@ const TransactionTable = ({ searchTerm, filter, motorbikeId }) => {
                       </Dropdown.Toggle>
 
                       <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-1">Edit</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">Delete</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleShowDeleteModal(transaction)}>Delete</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </td>
@@ -148,6 +164,21 @@ const TransactionTable = ({ searchTerm, filter, motorbikeId }) => {
           )}
         </tbody>
       </Table>
+
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Delete</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to delete this transaction?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteTransaction}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
