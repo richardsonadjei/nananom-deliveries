@@ -28,9 +28,10 @@ const getCurrentMonthRange = () => {
 };
 
 // Group transactions by motorbike
-const groupByMotorbike = (transactions) => {
+const groupByMotorbike = (transactions, allMotorbikes) => {
   const grouped = {};
 
+  // Group by transactions
   transactions.forEach((transaction) => {
     const motorbike = transaction.motorbike?.registrationNumber || 'Unknown';
     if (!grouped[motorbike]) {
@@ -44,18 +45,33 @@ const groupByMotorbike = (transactions) => {
     }
   });
 
+  // Ensure all motorbikes are included
+  allMotorbikes.forEach((bike) => {
+    if (!grouped[bike.registrationNumber]) {
+      grouped[bike.registrationNumber] = { incomes: [], expenses: [] };
+    }
+  });
+
   return grouped;
 };
 
 const BalanceSummary = () => {
   const [motorbikeData, setMotorbikeData] = useState({});
+  const [allMotorbikes, setAllMotorbikes] = useState([]);
   const currentUser = useSelector((state) => state.user.currentUser?.userName || '');
 
-  // Fetch transactions from the API
+  // Fetch transactions and motorbikes from the API
   const fetchData = async () => {
     try {
-      const response = await fetch('/api/incomes-expenses');
-      const data = await response.json();
+      // Fetch motorbikes
+      const motorbikeResponse = await fetch('/api/motorbikes');
+      const motorbikes = await motorbikeResponse.json();
+
+      setAllMotorbikes(motorbikes);
+
+      // Fetch transactions
+      const transactionResponse = await fetch('/api/incomes-expenses');
+      const data = await transactionResponse.json();
 
       if (!data || (!data.incomes && !data.expenses)) {
         console.error('Invalid data structure', data);
@@ -79,10 +95,10 @@ const BalanceSummary = () => {
       const allTransactions = [...incomeTransactions, ...expenseTransactions];
 
       // Group transactions by motorbike
-      const groupedMotorbikeData = groupByMotorbike(allTransactions);
+      const groupedMotorbikeData = groupByMotorbike(allTransactions, motorbikes);
       setMotorbikeData(groupedMotorbikeData);
     } catch (error) {
-      console.error('Error fetching income and expense data:', error);
+      console.error('Error fetching data:', error);
     }
   };
 
@@ -101,7 +117,7 @@ const BalanceSummary = () => {
 
   return (
     <div className="balance-summary">
-      <Row className="justify-content-center"> {/* Center the cards */}
+      <Row className="justify-content-center">
         {Object.keys(motorbikeData)
           .filter((motorbike) => !(currentUser === 'Pinkrah' && motorbike === 'M-24-GR 4194')) // Filter out the motorbike for Pinkrah
           .map((motorbike, index) => {
@@ -116,7 +132,6 @@ const BalanceSummary = () => {
             return (
               <Col xs={12} md={6} className="mb-4" key={index}>
                 <div className={`summary-card motorbike-summary ${index % 2 === 0 ? 'weekly-summary' : 'monthly-summary'}`}>
-                  {/* Motorbike and Weekly Summary */}
                   <div className="summary-header">
                     <h5>Motorbike: {motorbike}</h5>
                     <span>{getCurrentWeekRange()}</span>
@@ -137,7 +152,6 @@ const BalanceSummary = () => {
                     </div>
                   </div>
 
-                  {/* Monthly Summary */}
                   <div className="summary-header mt-3">
                     <h5>Monthly Summary</h5>
                     <span>{getCurrentMonthRange()}</span>
