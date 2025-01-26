@@ -513,23 +513,76 @@ export const getAllIncomesForBikeWithinPeriod = async (req, res) => {
 
 
 
-// Controller to fetch all expense records for a particular motorbike
+
+
 export const getExpensesByMotorbike = async (req, res) => {
   try {
-    const { motorbikeId } = req.params;
+    const { startDate, endDate, category, notes, motorbikeId } = req.query;
 
-    // Find all expenses that are linked to the given motorbike ID
-    const expenses = await Expense.find({ motorbike: motorbikeId }).populate('category', 'name'); // Populate category to get its name
+    // Build the query object dynamically
+    const query = {};
 
-    if (!expenses || expenses.length === 0) {
-      return res.status(404).json({ message: 'No expenses found for this motorbike' });
+    // Filter by date range if both dates are provided
+    if (startDate || endDate) {
+      query.date = {};
+      if (startDate) {
+        query.date.$gte = new Date(startDate + "T00:00:00Z"); // Start of the day
+      }
+      if (endDate) {
+        query.date.$lte = new Date(endDate + "T23:59:59.999Z"); // End of the day
+      }
     }
 
-    res.status(200).json(expenses);
+    // Filter by category
+    if (category) {
+      query.category = category; // Assumes `category` is an ID
+    }
+
+    // Filter by notes (case-insensitive search)
+    if (notes) {
+      query.notes = { $regex: notes, $options: "i" };
+    }
+
+    // Filter by motorbike ID
+    if (motorbikeId) {
+      query.motorbike = motorbikeId;
+    }
+
+    // Fetch expenses with populated fields
+    const expenses = await Expense.find(query)
+      .populate("category", "name") // Populate only the name field of category
+      .populate("motorbike", "name") // Populate only the name field of motorbike
+      .exec();
+
+    // Format the response data for consistency
+    const formattedData = expenses.map((expense) => ({
+      id: expense._id,
+      amount: expense.amount,
+      category: expense.category?.name || "N/A",
+      motorbike: expense.motorbike?.name || "N/A",
+      paymentMethod: expense.paymentMethod || "N/A",
+      date: expense.date.toISOString().split("T")[0], // Format date as YYYY-MM-DD
+      time: expense.time || "N/A",
+      notes: expense.notes || "N/A",
+      recordedBy: expense.recordedBy || "N/A",
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: formattedData,
+      total: formattedData.length, // Include total number of expenses
+    });
   } catch (error) {
-    res.status(500).json({ message: 'Error fetching expenses', error: error.message });
+    console.error("Error fetching expenses:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch expenses. Please try again later.",
+    });
   }
 };
+
+
+
 
 
 
@@ -632,5 +685,135 @@ export const deletePayroll = async (req, res) => {
     res.status(200).json({ message: 'Payroll record deleted successfully.' });
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+
+
+export const getIncomeByMotorbike = async (req, res) => {
+  try {
+    const { startDate, endDate, notes, motorbikeId } = req.query;
+
+    // Build the query object dynamically
+    const query = {};
+
+    // Filter by date range if both dates are provided
+    if (startDate || endDate) {
+      query.date = {};
+      if (startDate) {
+        query.date.$gte = new Date(startDate + "T00:00:00Z"); // Start of the day
+      }
+      if (endDate) {
+        query.date.$lte = new Date(endDate + "T23:59:59.999Z"); // End of the day
+      }
+    }
+
+    // Filter by notes (case-insensitive search)
+    if (notes) {
+      query.notes = { $regex: notes, $options: "i" };
+    }
+
+    // Filter by motorbike ID
+    if (motorbikeId) {
+      query.motorbike = motorbikeId;
+    }
+
+    // Fetch income with populated motorbike fields
+    const incomeRecords = await Income.find(query)
+      .populate("motorbike", "registrationNumber") // Populate only the registrationNumber field of motorbike
+      .exec();
+
+    // Format the response data for consistency
+    const formattedData = incomeRecords.map((income) => ({
+      id: income._id,
+      amount: income.amount,
+      category: income.category || "N/A",
+      motorbike: income.motorbike?.registrationNumber || "N/A",
+      paymentMethod: income.paymentMethod || "N/A",
+      date: income.date.toDateString(), // Format date as Mon Jan 10 2025
+      time: income.time || "N/A",
+      notes: income.notes || "N/A",
+      recordedBy: income.recordedBy || "N/A",
+    }));
+
+    res.status(200).json({
+      success: true,
+      data: formattedData,
+      total: formattedData.length, // Include total number of income records
+    });
+  } catch (error) {
+    console.error("Error fetching income records:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch income records. Please try again later.",
+    });
+  }
+};
+
+
+
+
+export const getProfitOrLossByMotorbike = async (req, res) => {
+  try {
+    const { motorbikeId, startDate, endDate } = req.query;
+
+    // Validate the motorbikeId
+    if (!motorbikeId) {
+      return res.status(400).json({
+        success: false,
+        message: 'Motorbike ID is required.',
+      });
+    }
+
+    // Build the date filter query
+    const dateQuery = {};
+    if (startDate) {
+      dateQuery.$gte = new Date(`${startDate}T00:00:00Z`);
+    }
+    if (endDate) {
+      dateQuery.$lte = new Date(`${endDate}T23:59:59.999Z`);
+    }
+
+    // Build the query object for incomes and expenses
+    const baseQuery = { motorbike: motorbikeId };
+    if (startDate || endDate) {
+      baseQuery.date = dateQuery;
+    }
+
+    // Fetch incomes for the motorbike within the date range (if provided)
+    const incomes = await Income.find(baseQuery).exec();
+
+    // Fetch expenses for the motorbike within the date range (if provided)
+    const expenses = await Expense.find(baseQuery)
+      .populate('category', 'name')
+      .exec();
+
+    // Calculate total income
+    const totalIncome = incomes.reduce((sum, income) => sum + income.amount, 0);
+
+    // Calculate total expenses
+    const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+
+    // Calculate net profit or loss
+    const netProfitOrLoss = totalIncome - totalExpenses;
+
+    // Respond with the data
+    res.status(200).json({
+      success: true,
+      data: {
+        incomes,
+        expenses,
+        totalIncome,
+        totalExpenses,
+        netProfitOrLoss,
+        status: netProfitOrLoss >= 0 ? 'Profit' : 'Loss',
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching profit or loss:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch profit or loss. Please try again later.',
+    });
   }
 };

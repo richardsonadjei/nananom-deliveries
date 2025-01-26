@@ -1,5 +1,5 @@
 import express from 'express';
-import { createExpense, createExpenseCategory, createIncome, createTransfer, deleteExpense, deleteExpenseCategory, deleteIncome, deletePayroll, deleteTransfer, getAllExpenseCategories, getAllExpenses, getAllIncomesAndExpenses, getAllIncomesForBike, getAllIncomesForBikeWithinPeriod, getAllPayrolls, getAllTransfers, getExpenseById, getExpenseCategoryById, getExpensesByMotorbike, getExpensesByMotorbikeAndPeriod,  getIncomeById, getIncomes, getPayrollById, getTransferById, updateExpense, updateExpenseCategory, updateIncome, updatePayroll, updateTransfer } from '../controllers/finance.controller.js';
+import { createExpense, createExpenseCategory, createIncome, createTransfer, deleteExpense, deleteExpenseCategory, deleteIncome, deletePayroll, deleteTransfer, getAllExpenseCategories, getAllExpenses, getAllIncomesAndExpenses, getAllIncomesForBike, getAllIncomesForBikeWithinPeriod, getAllPayrolls, getAllTransfers, getExpenseById, getExpenseCategoryById, getExpensesByMotorbike, getExpensesByMotorbikeAndPeriod,  getIncomeById, getIncomeByMotorbike, getIncomes, getPayrollById, getProfitOrLossByMotorbike, getTransferById, updateExpense, updateExpenseCategory, updateIncome, updatePayroll, updateTransfer } from '../controllers/finance.controller.js';
 
 
 const financeRouter = express.Router();
@@ -58,7 +58,7 @@ financeRouter.put('/transfers/:id', updateTransfer);
 financeRouter.delete('/transfers/:id', deleteTransfer);
 financeRouter.get('/incomes/:motorbikeId', getAllIncomesForBike);
 financeRouter.get('/incomes/:motorbikeId/period', getAllIncomesForBikeWithinPeriod);
-financeRouter.get('/expenses-motorbike/:motorbikeId', getExpensesByMotorbike);
+financeRouter.get('/expenses-motorbike', getExpensesByMotorbike);
 financeRouter.get('/expenses/motorbike/:motorbikeId/period', getExpensesByMotorbikeAndPeriod);
 
 
@@ -73,4 +73,9 @@ financeRouter.put('/payrolls/:id', updatePayroll);
 
 // Delete a payroll record by ID
 financeRouter.delete('/payrolls/:id', deletePayroll);
+
+// Delete a payroll record by ID
+financeRouter.get("/income-report-motorbike", getIncomeByMotorbike);
+
+financeRouter.get('/profit-loss-report-by-bike', getProfitOrLossByMotorbike);
 export default financeRouter;

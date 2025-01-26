@@ -18,7 +18,7 @@ import ProfitLossReport from './pages/reports/ProfitLossReport';
 import DailySalesReport from './pages/reports/DailySalesReport';
 import MoMoDeposit from './pages/MomoDeposit';
 import MomoDepositReport from './pages/reports/MomoDepositReport';
-import ReportsDashboard from './pages/reports-new/FinancialReport';
+
 import AllIncome from './pages/reports-new/allreports/AllIncomeReport';
 import IncomeByPeriod from './pages/reports-new/allreports/IncomeByPeriod';
 import { MotorbikeProvider } from './pages/reports-new/allreports/MotorBikeContext';
@@ -26,6 +26,10 @@ import AllExpenseReport from './pages/reports-new/allreports/expenseReports/AllE
 import ExpenseByPeriod from './pages/reports-new/allreports/expenseReports/ExpenseByPeriod';
 import AllEmployeesReport from './pages/HumanResource/EmployeeList';
 import AllPayrollsReport from './pages/HumanResource/PayRoll';
+import ExpenseReportViewer from './pages/reports-new/allreports/expenseReports/AllExpenseReportNew';
+import IncomeReportViewer from './pages/reports-new/allreports/AllIncomeReport';
+import ProfitLossReportViewer from './pages/reports-new/ProfitLossReportByBike';
+
 
 
 export default function App() {
@@ -51,13 +55,15 @@ export default function App() {
             <Route path='/daily-sales-report' element={<DailySalesReport />} />
             <Route path='/add-momo-deposits' element={<MoMoDeposit />} />
             <Route path='/momo-deposits' element={<MomoDepositReport />} />
-            <Route path='/reports' element={<ReportsDashboard />} />
+            <Route path='/expense-reports' element={<ExpenseReportViewer />} />
+            <Route path='/income-reports' element={<IncomeReportViewer />} />
             <Route path='/all-bike-income' element={<AllIncome />} />
             <Route path='/all-bike-income-by-period' element={<IncomeByPeriod />} />
             <Route path='/all-bike-expense' element={<AllExpenseReport/>} />
             <Route path='/all-bike-expense-by-period' element={<ExpenseByPeriod/>} />
             <Route path='/employee-list' element={<AllEmployeesReport/>} />
             <Route path='/payrolls' element={<AllPayrollsReport/>} />
+            <Route path='/motor-profit-loss-reports' element={<ProfitLossReportViewer/>} />
           </Route>
         </Routes>
       </MotorbikeProvider>

@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
-import { Row, Col, Button } from 'react-bootstrap';
+import { Row, Col, Modal, Button } from 'react-bootstrap';
 import IncomeCard from './Home/Income';
 import ExpenseCard from './Home/Expense';
 import TransferCard from './Home/Transfer';
-import TransactionCard from './Home/Transaction';
+
 import BalanceSummary from './Home/BalanceSummary';
 import RecentTransactions from './Home/RecentTransaction';
 import IncomeModal from './Income/AddIncomeModal';
 import ExpenseModal from './Expense/AddExpenseModal';
 import TransferModal from './Transfer/AddTransferModal';
-
+import { useNavigate } from 'react-router-dom';
+import Reports from './Home/Reports';
 
 const Home = () => {
   const [showExpenseModal, setShowExpenseModal] = useState(false);
-  const [showIncomeModal, setShowIncomeModal] = useState(false); 
-  const [showTransferModal, setShowTransferModal] = useState(false); // State for TransferModal
+  const [showIncomeModal, setShowIncomeModal] = useState(false);
+  const [showTransferModal, setShowTransferModal] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false); // State for Report Modal
+
+  const navigate = useNavigate();
+
+  // Handle Report Modal
+  const handleShowReportModal = () => setShowReportModal(true);
+  const handleCloseReportModal = () => setShowReportModal(false);
 
   // Handle Expense Modal
   const handleCloseExpense = () => setShowExpenseModal(false);
@@ -31,19 +39,16 @@ const Home = () => {
   // Save Expense
   const handleSaveExpense = (expenseData) => {
     console.log('Saved Expense:', expenseData);
-    // Handle saving logic here (e.g., send data to backend)
   };
 
   // Save Income
   const handleSaveIncome = (incomeData) => {
     console.log('Saved Income:', incomeData);
-    // Handle saving logic here (e.g., send data to backend)
   };
 
   // Save Transfer
   const handleSaveTransfer = (transferData) => {
     console.log('Saved Transfer:', transferData);
-    // Handle saving logic here (e.g., send data to backend)
   };
 
   return (
@@ -51,16 +56,16 @@ const Home = () => {
       <div className="button-grid">
         <Row>
           <Col xs={6} md={3}>
-            <IncomeCard handleShow={handleShowIncome} /> {/* Pass handleShowIncome to IncomeCard */}
+            <IncomeCard handleShow={handleShowIncome} />
           </Col>
           <Col xs={6} md={3}>
-            <ExpenseCard handleShow={handleShowExpense} /> {/* Pass handleShowExpense to ExpenseCard */}
+            <ExpenseCard handleShow={handleShowExpense} />
           </Col>
           <Col xs={6} md={3}>
-            <TransferCard handleShow={handleShowTransfer} /> {/* Pass handleShowTransfer to TransferCard */}
+            <TransferCard handleShow={handleShowTransfer} />
           </Col>
           <Col xs={6} md={3}>
-            <TransactionCard />
+            <Reports handleShowModal={handleShowReportModal} />
           </Col>
         </Row>
       </div>
@@ -68,26 +73,65 @@ const Home = () => {
       <BalanceSummary />
       <RecentTransactions />
 
-      
       <ExpenseModal
         show={showExpenseModal}
         handleClose={handleCloseExpense}
         handleSave={handleSaveExpense}
       />
 
-      {/* Income Modal */}
       <IncomeModal
         show={showIncomeModal}
         handleClose={handleCloseIncome}
         handleSave={handleSaveIncome}
       />
 
-      {/* Transfer Modal */}
       <TransferModal
         show={showTransferModal}
         handleClose={handleCloseTransfer}
         handleSave={handleSaveTransfer}
       />
+
+      {/* Report Modal */}
+      <Modal show={showReportModal} onHide={handleCloseReportModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Select Report</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Button
+            className="mb-2"
+            block
+            variant="primary"
+            onClick={() => {
+              navigate('/income-reports');
+              handleCloseReportModal();
+            }}
+          >
+            Income Reports
+          </Button>
+          <Button
+            className="mb-2"
+            block
+            variant="success"
+            onClick={() => {
+              navigate('/expense-reports');
+              handleCloseReportModal();
+            }}
+          >
+            Expense Reports
+          </Button>
+          <Button
+            block
+            variant="warning"
+            onClick={() => {
+              navigate('/motor-profit-loss-reports');
+              handleCloseReportModal();
+            }}
+          >
+            Profit/Loss Reports
+          </Button>
+        </Modal.Body>
+       
+      </Modal>
     </div>
   );
 };

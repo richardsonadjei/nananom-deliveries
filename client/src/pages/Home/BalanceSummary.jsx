@@ -2,19 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
-// Utility functions remain unchanged
-const getCurrentWeekRange = () => {
-  const now = new Date();
-  const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay())); // Sunday
-  const lastDayOfWeek = new Date(firstDayOfWeek);
-  lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6); // Saturday
-
-  const formatDate = (date) =>
-    date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
-
-  return `${formatDate(firstDayOfWeek)} - ${formatDate(lastDayOfWeek)}`;
-};
-
 const getCurrentMonthRange = () => {
   const now = new Date();
   const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -24,6 +11,31 @@ const getCurrentMonthRange = () => {
     date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 
   return `${formatDate(firstDayOfMonth)} - ${formatDate(lastDayOfMonth)}`;
+};
+
+const getCurrentWeekRange = () => {
+  const now = new Date();
+  const firstDayOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+  const lastDayOfWeek = new Date(firstDayOfWeek);
+  lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
+
+  const formatDate = (date) =>
+    date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+
+  return `${formatDate(firstDayOfWeek)} - ${formatDate(lastDayOfWeek)}`;
+};
+
+const isDateInCurrentWeek = (date) => {
+  const now = new Date();
+  const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
+  const endOfWeek = new Date(startOfWeek);
+  endOfWeek.setDate(startOfWeek.getDate() + 6);
+  return date >= startOfWeek && date <= endOfWeek;
+};
+
+const isDateInCurrentMonth = (date) => {
+  const now = new Date();
+  return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
 };
 
 const groupByMotorbike = (transactions, allMotorbikes) => {
@@ -49,23 +61,10 @@ const groupByMotorbike = (transactions, allMotorbikes) => {
   return grouped;
 };
 
-const isDateInCurrentWeek = (date) => {
-  const now = new Date();
-  const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay()));
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(startOfWeek.getDate() + 6);
-  return date >= startOfWeek && date <= endOfWeek;
-};
-
-const isDateInCurrentMonth = (date) => {
-  const now = new Date();
-  return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-};
-
 const BalanceSummary = () => {
   const [motorbikeData, setMotorbikeData] = useState({});
   const [allMotorbikes, setAllMotorbikes] = useState([]);
-  const [expandedCard, setExpandedCard] = useState(null); // Track expanded card
+  const [expandedCard, setExpandedCard] = useState(null);
   const currentUser = useSelector((state) => state.user.currentUser?.userName || "");
 
   const fetchData = async () => {
@@ -102,7 +101,7 @@ const BalanceSummary = () => {
 
   useEffect(() => {
     fetchData();
-    const intervalId = setInterval(fetchData, 1000);
+    const intervalId = setInterval(fetchData, 100000);
     return () => clearInterval(intervalId);
   }, []);
 
@@ -120,7 +119,12 @@ const BalanceSummary = () => {
     <div className="balance-summary">
       <Row className="justify-content-center">
         {Object.keys(motorbikeData)
-          .filter((motorbike) => !(currentUser === "Pinkrah" && motorbike === "M-24-GR 4194"))
+          .filter((motorbike) => {
+            if (currentUser === "Pinkrah") {
+              return motorbike === "M-24-VR 1084(Partnership)";
+            }
+            return true;
+          })
           .map((motorbike, index) => {
             const incomes = motorbikeData[motorbike].incomes;
             const expenses = motorbikeData[motorbike].expenses;

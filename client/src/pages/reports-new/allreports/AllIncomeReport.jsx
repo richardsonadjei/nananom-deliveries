@@ -1,127 +1,192 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Container } from 'react-bootstrap';
-import ReportsHomeSidebar from '../SideBar';
-import { useMotorbike } from './MotorBikeContext';
+import React, { useState, useEffect } from "react";
+import { Card, Table, Form, Button, Row, Col } from "react-bootstrap";
+import Select from "react-select";
+import * as XLSX from "xlsx";
+import { useSelector } from "react-redux";
 
-const AllIncome = () => {
-  const { selectedBikeId } = useMotorbike(); // Use the context to get the selectedBikeId
-  const [incomes, setIncomes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [registrationNumber, setRegistrationNumber] = useState(''); // State to store the registration number
+const IncomeReportViewer = () => {
+  const [incomeRecords, setIncomeRecords] = useState([]);
+  const [bikes, setBikes] = useState([]);
+  const [filters, setFilters] = useState({
+    search: "",
+    startDate: "",
+    endDate: "",
+    motorbike: null,
+  });
 
+  const currentUser = useSelector((state) => state.user.currentUser?.userName || "");
+
+  // Fetch motorbikes
   useEffect(() => {
-    const fetchRegistrationNumber = async () => {
-      if (!selectedBikeId) return;
-
+    const fetchBikes = async () => {
       try {
-        const response = await fetch(`/api/motorbikes/${selectedBikeId}`);
-        if (!response.ok) {
-          console.error('Error fetching motorbike details:', response.status);
-          return;
-        }
+        const response = await fetch("/api/motorbikes");
+        if (response.ok) {
+          const result = await response.json();
+          const filteredBikes = result.filter((bike) =>
+            currentUser === "Pinkrah"
+              ? bike.registrationNumber === "M-24-VR 1084(Partnership)"
+              : true
+          );
 
-        const data = await response.json();
-        setRegistrationNumber(data.registrationNumber);
+          setBikes(
+            filteredBikes.map((bike) => ({
+              value: bike._id,
+              label: bike.registrationNumber,
+            }))
+          );
+        } else {
+          console.error("Failed to fetch motorbikes.");
+        }
       } catch (error) {
-        console.error('Error fetching motorbike details:', error);
+        console.error("Error fetching motorbikes:", error);
       }
     };
 
-    fetchRegistrationNumber();
-  }, [selectedBikeId]);
+    fetchBikes();
+  }, [currentUser]);
 
+  // Fetch income records
   useEffect(() => {
-    const fetchIncomes = async () => {
-      console.log('Selected Bike ID:', selectedBikeId); // Log the selectedBikeId to debug
-      if (!selectedBikeId) return;
+    const fetchIncome = async () => {
+      if (!filters.motorbike) return;
+
+      const queryParams = new URLSearchParams({
+        motorbikeId: filters.motorbike?.value || "",
+        startDate: filters.startDate || "",
+        endDate: filters.endDate || "",
+        notes: filters.search || "",
+      }).toString();
 
       try {
-        setLoading(true);
-        const response = await fetch(`/api/incomes/${selectedBikeId}`);
-        if (!response.ok) {
-          console.error('Error fetching incomes:', response.status);
-          setLoading(false);
-          return;
+        const response = await fetch(`/api/income-report-motorbike?${queryParams}`);
+        if (response.ok) {
+          const result = await response.json();
+          setIncomeRecords(
+            Array.isArray(result.data)
+              ? result.data.sort((a, b) => new Date(b.date) - new Date(a.date))
+              : []
+          );
+        } else {
+          setIncomeRecords([]);
         }
-
-        const data = await response.json();
-        setIncomes(data.incomes);
-        setLoading(false);
       } catch (error) {
-        console.error('Error fetching incomes:', error);
-        setLoading(false);
+        setIncomeRecords([]);
       }
     };
 
-    fetchIncomes();
-  }, [selectedBikeId]);
+    fetchIncome();
+  }, [filters]);
 
-  // Calculate the sum of all incomes
-  const totalIncome = incomes.reduce((sum, income) => sum + income.amount, 0);
+  const handleFilterChange = (name, value) => {
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const totalIncome = incomeRecords.reduce((sum, record) => sum + record.amount, 0);
 
   return (
-    <Container fluid style={{ padding: 0, width: '100vw', margin: 0, overflowX: 'hidden' }}>
-      {/* Include the Sidebar as an off-canvas component */}
-      <ReportsHomeSidebar />
+    <div className="motorbike-income-report-container">
+      <div className="motorbike-income-report-header">
+        <Select
+          className="motorbike-income-report-input"
+          options={bikes}
+          placeholder="Select Motorbike"
+          isClearable
+          value={filters.motorbike}
+          onChange={(value) => handleFilterChange("motorbike", value)}
+        />
+      </div>
 
-      <Container fluid style={{ maxWidth: '100vw', overflowX: 'hidden', padding: '20px' }}>
-        <h2 style={{ color: 'white', marginBottom: '20px', textAlign: 'center' }}>
-          All Income for Motorbike: {registrationNumber ? registrationNumber : 'N/A'}
-        </h2>
+      {filters.motorbike && (
+        <Card className="mt-3">
+          <Card.Body>
+            <h5>Total Income: GHC {totalIncome.toLocaleString()}</h5>
+          </Card.Body>
+        </Card>
+      )}
 
-        {/* Display the total income */}
-        <p style={{ color: 'white', textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold' }}>
-          Total Income: Ghc {totalIncome.toLocaleString()}
-        </p>
+      {filters.motorbike && (
+        <>
+          <div className="motorbike-income-report-filters mt-3">
+            <Row>
+              <Col md={4}>
+                <Form.Control
+                  type="text"
+                  placeholder="Search by notes"
+                  value={filters.search}
+                  onChange={(e) => handleFilterChange("search", e.target.value)}
+                />
+              </Col>
+              <Col md={4}>
+                <Form.Control
+                  type="date"
+                  value={filters.startDate}
+                  onChange={(e) => handleFilterChange("startDate", e.target.value)}
+                />
+              </Col>
+              <Col md={4}>
+                <Form.Control
+                  type="date"
+                  value={filters.endDate}
+                  onChange={(e) => handleFilterChange("endDate", e.target.value)}
+                />
+              </Col>
+            </Row>
+          </div>
 
-        {loading ? (
-          <p style={{ color: 'white', textAlign: 'center' }}>Loading...</p>
-        ) : (
-          <Table striped bordered hover variant="dark" responsive>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>Amount (Ghc)</th>
-                <th>Category</th>
-                <th>Payment Method</th>
-                <th>Notes</th>
-                <th>Recorded By</th>
-              </tr>
-            </thead>
-            <tbody>
-              {incomes.length > 0 ? (
-                incomes.map((income, index) => (
-                  <tr key={income._id}>
-                    <td>{index + 1}</td>
-                    <td>
-                      {new Date(income.date).toLocaleDateString('en-US', {
-                        weekday: 'short',
-                        month: 'short',
-                        day: 'numeric',
-                        year: '2-digit'
-                      })}
-                    </td>
-                    <td>{income.amount.toLocaleString()}</td>
-                    <td>{income.category}</td>
-                    <td>{income.paymentMethod}</td>
-                    <td>{income.notes}</td>
-                    <td>{income.recordedBy}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="7" style={{ textAlign: 'center' }}>
-                    No income records found for this motorbike.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </Table>
-        )}
-      </Container>
-    </Container>
+          <div className="mt-3">
+            <Button
+              onClick={() => {
+                const worksheet = XLSX.utils.json_to_sheet(incomeRecords || []);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Income");
+                XLSX.writeFile(workbook, "IncomeReport.xlsx");
+              }}
+            >
+              Export to Excel
+            </Button>
+          </div>
+
+          <div className="motorbike-income-report-table mt-3">
+            {incomeRecords.length > 0 ? (
+              <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: "400px" }}>
+                <Table bordered hover style={{ minWidth: "1000px" }}>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Motorbike</th>
+                      <th>Category</th>
+                      <th>Notes</th>
+                      <th>Amount (GHC)</th>
+                      <th>Recorded By</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {incomeRecords.map((record, index) => (
+                      <tr key={record.id}>
+                        <td>{index + 1}</td>
+                        <td>{new Date(record.date).toDateString()}</td>
+                        <td>{record.time || "N/A"}</td>
+                        <td>{record.motorbike || "N/A"}</td>
+                        <td>{record.category || "N/A"}</td>
+                        <td>{record.notes || "N/A"}</td>
+                        <td>{record.amount.toLocaleString()}</td>
+                        <td>{record.recordedBy || "N/A"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+            ) : (
+              <p className="text-center mt-3">No income records match the selected filters.</p>
+            )}
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
-export default AllIncome;
+export default IncomeReportViewer;

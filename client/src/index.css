@@ -396,3 +396,253 @@ body {
   opacity: 0;
   pointer-events: none;
 }
+
+
+/* Container and Header */
+.motorbike-expense-report-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #f5f7fa, #c3cfe2);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.motorbike-expense-report-header {
+  margin-bottom: 20px;
+}
+
+.motorbike-expense-report-header .motorbike-expense-report-input {
+  font-size: 1rem;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: border 0.3s ease;
+}
+
+.motorbike-expense-report-header .motorbike-expense-report-input:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+/* Filters Section */
+.motorbike-expense-report-filters {
+  margin-bottom: 20px;
+}
+
+.motorbike-expense-report-input {
+  width: 100%;
+  border-radius: 8px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.motorbike-expense-report-input:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 10px rgba(0, 128, 0, 0.5);
+  outline: none;
+}
+
+/* Summary Card */
+.motorbike-expense-report-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  text-align: center;
+}
+
+/* Table */
+.motorbike-expense-report-table {
+  margin-top: 20px;
+}
+
+.motorbike-expense-report-row {
+  transition: background 0.3s ease;
+}
+
+.motorbike-expense-report-row:hover {
+  background: #f0f8ff;
+}
+
+/* Buttons */
+.motorbike-expense-report-button {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+.motorbike-expense-report-button:hover {
+  background: #45a049;
+  transform: translateY(-3px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Centering the Select Input */
+.motorbike-expense-report-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.motorbike-expense-report-input {
+  width: 50%; /* Limit the width */
+  font-size: 1rem;
+}
+
+/* Filters Section */
+.motorbike-expense-report-filters {
+  margin-top: 20px;
+}
+
+/* Table */
+.motorbike-expense-report-table {
+  margin-top: 20px;
+}
+
+
+
+/* Container */
+.motorbike-profit-loss-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #f5f7fa, #c3cfe2);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Header */
+.motorbike-profit-loss-header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.motorbike-profit-loss-header .motorbike-profit-loss-input {
+  font-size: 1rem;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: border 0.3s ease;
+  width: 50%;
+}
+
+.motorbike-profit-loss-header .motorbike-profit-loss-input:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+/* Filters Section */
+.motorbike-profit-loss-filters {
+  margin-bottom: 20px;
+}
+
+.motorbike-profit-loss-filters .position-relative {
+  margin-bottom: 10px;
+}
+
+.motorbike-profit-loss-filters input,
+.motorbike-profit-loss-filters select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.motorbike-profit-loss-filters input:focus,
+.motorbike-profit-loss-filters select:focus {
+  transform: scale(1.02);
+  box-shadow: 0 0 10px rgba(0, 128, 0, 0.5);
+  outline: none;
+}
+
+/* Card */
+.motorbike-profit-loss-card {
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Table */
+.motorbike-profit-loss-table {
+  margin-top: 20px;
+}
+
+.motorbike-profit-loss-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.motorbike-profit-loss-table th,
+.motorbike-profit-loss-table td {
+  padding: 12px 15px;
+  text-align: center;
+}
+
+.motorbike-profit-loss-table th {
+  background: #4caf50;
+  color: #fff;
+  font-weight: bold;
+}
+
+.motorbike-profit-loss-table td {
+  border: 1px solid #ddd;
+}
+
+.motorbike-profit-loss-row:hover {
+  background: #f0f8ff;
+}
+
+/* Buttons */
+.motorbike-profit-loss-button {
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  transition: background 0.3s ease, transform 0.2s;
+}
+
+.motorbike-profit-loss-button:hover {
+  background: #45a049;
+  transform: translateY(-3px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Table */
+.motorbike-profit-loss-table-container {
+  overflow-x: auto;
+  max-height: 400px;
+}
+
+

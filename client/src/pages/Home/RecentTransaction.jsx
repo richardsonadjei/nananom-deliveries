@@ -1,37 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import { ListGroup } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { ListGroup } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 const RecentTransactions = () => {
   const [transactions, setTransactions] = useState([]);
-  const currentUser = useSelector((state) => state.user.currentUser?.userName || '');
+  const currentUser = useSelector((state) => state.user.currentUser?.userName || "");
 
   // Fetch transactions from the API
   const fetchTransactions = async () => {
     try {
-      const response = await fetch('/api/incomes-expenses');
+      const response = await fetch("/api/incomes-expenses");
       const data = await response.json();
 
       if (!data || (!data.incomes && !data.expenses)) {
-        console.error('Invalid data structure', data);
+        console.error("Invalid data structure", data);
         return;
       }
 
       // Combine income and expenses into one array and assign the type manually
       const incomeTransactions = data.incomes.map((item) => ({
         ...item,
-        description: `Sales for Motorbike ${item.motorbike?.registrationNumber || ''}`,
-        transactionType: 'Income',
-        color: 'text-success',
+        description: `Sales for Motorbike ${item.motorbike?.registrationNumber || ""}`,
+        transactionType: "Income",
+        color: "text-success",
       }));
 
       const expenseTransactions = data.expenses.map((item) => ({
         ...item,
-        description: item.category?.name === 'Transfers'
-          ? `${item.notes} ${item.motorbike ? `for ${item.motorbike.registrationNumber}` : ''}`
-          : `Expense for ${item.category?.name || 'General'} ${item.motorbike ? '- ' + item.motorbike.registrationNumber : ''}`,
-        transactionType: 'Expense',
-        color: 'text-danger',
+        description:
+          item.category?.name === "Transfers"
+            ? `${item.notes} ${item.motorbike ? `for ${item.motorbike.registrationNumber}` : ""}`
+            : `Expense for ${item.category?.name || "General"} ${
+                item.motorbike ? "- " + item.motorbike.registrationNumber : ""
+              }`,
+        transactionType: "Expense",
+        color: "text-danger",
       }));
 
       // Combine and sort transactions by date
@@ -39,17 +42,17 @@ const RecentTransactions = () => {
         (a, b) => new Date(b.date) - new Date(a.date)
       );
 
-      // If the current user is "Pinkrah", filter out transactions for the specific motorbike
-      if (currentUser === 'Pinkrah') {
+      // If the current user is "Pinkrah", filter transactions to only show for M-24-VR 1084(Partnership)
+      if (currentUser === "Pinkrah") {
         allTransactions = allTransactions.filter(
-          (transaction) => transaction.motorbike?.registrationNumber !== 'M-24-GR 4194'
+          (transaction) =>
+            transaction.motorbike?.registrationNumber === "M-24-VR 1084(Partnership)"
         );
       }
 
-      // Set all transactions without limiting to 5
       setTransactions(allTransactions);
     } catch (error) {
-      console.error('Error fetching transactions:', error);
+      console.error("Error fetching transactions:", error);
     }
   };
 
@@ -66,16 +69,17 @@ const RecentTransactions = () => {
   // Function to format the date as Mon Aug 8 -24
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const options = { weekday: 'short', month: 'short', day: 'numeric' };
-    const formattedDate = date.toLocaleDateString('en-US', options);
+    const options = { weekday: "short", month: "short", day: "numeric" };
+    const formattedDate = date.toLocaleDateString("en-US", options);
     const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
     return `${formattedDate} -${year}`;
   };
 
   return (
     <div className="recent-transactions">
-      <h5 style={{ color: 'white' }}>Recent Transactions</h5>
-      <ListGroup style={{ maxHeight: '200px', overflowY: 'auto' }}> {/* Set a max height and enable vertical scrolling */}
+      <h5 style={{ color: "white" }}>Recent Transactions</h5>
+      <ListGroup style={{ maxHeight: "200px", overflowY: "auto" }}>
+        {/* Set a max height and enable vertical scrolling */}
         {transactions.length > 0 ? (
           transactions.map((transaction, index) => (
             <ListGroup.Item key={index}>
@@ -83,7 +87,7 @@ const RecentTransactions = () => {
               <div className="transaction-description">
                 {transaction.description}
                 <span className={`transaction-amount ${transaction.color}`}>
-                  {transaction.amount ? transaction.amount.toFixed(2) : '0.00'}
+                  {transaction.amount ? transaction.amount.toFixed(2) : "0.00"}
                 </span>
               </div>
               <div className="transaction-type">{transaction.transactionType}</div>
