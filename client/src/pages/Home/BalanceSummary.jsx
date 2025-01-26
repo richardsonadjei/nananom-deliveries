@@ -122,8 +122,12 @@ const BalanceSummary = () => {
           .filter((motorbike) => {
             if (currentUser === "Pinkrah") {
               return motorbike === "M-24-VR 1084(Partnership)";
+            } else if (currentUser === "Miller") {
+              return motorbike === "ABOBOYAA-BIKE 1";
+            } else if (currentUser === "David") {
+              return motorbike !== "ABOBOYAA-BIKE 1";
             }
-            return true;
+            return motorbike !== "Unknown";
           })
           .map((motorbike, index) => {
             const incomes = motorbikeData[motorbike].incomes;

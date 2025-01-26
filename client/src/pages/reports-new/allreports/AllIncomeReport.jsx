@@ -23,11 +23,18 @@ const IncomeReportViewer = () => {
         const response = await fetch("/api/motorbikes");
         if (response.ok) {
           const result = await response.json();
-          const filteredBikes = result.filter((bike) =>
-            currentUser === "Pinkrah"
-              ? bike.registrationNumber === "M-24-VR 1084(Partnership)"
-              : true
-          );
+
+          // Filter motorbikes based on user roles
+          const filteredBikes = result.filter((bike) => {
+            if (currentUser === "Pinkrah") {
+              return bike.registrationNumber === "M-24-VR 1084(Partnership)";
+            } else if (currentUser === "Miller") {
+              return bike.registrationNumber === "ABOBOYAA-BIKE 1";
+            } else if (currentUser === "David") {
+              return bike.registrationNumber !== "ABOBOYAA-BIKE 1";
+            }
+            return bike.registrationNumber !== "Unknown";
+          });
 
           setBikes(
             filteredBikes.map((bike) => ({

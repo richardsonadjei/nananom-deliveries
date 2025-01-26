@@ -1,71 +1,82 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, InputGroup, Row, Col } from 'react-bootstrap';
-import { FaMotorcycle, FaMoneyBill, FaWallet, FaStickyNote, FaPhoneAlt } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
-import Select from 'react-select';
+import React, { useState, useEffect } from "react";
+import { Modal, Button, Form, InputGroup, Row, Col } from "react-bootstrap";
+import { FaMotorcycle, FaMoneyBill, FaWallet, FaStickyNote, FaPhoneAlt } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import Select from "react-select";
 
 const TransferModal = ({ show, handleClose, handleSave }) => {
   const [selectedMotorbike, setSelectedMotorbike] = useState(null);
-  const [amount, setAmount] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('Momo');
-  const [notes, setNotes] = useState('');
-  const [momoNumber, setMomoNumber] = useState('');
+  const [amount, setAmount] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("Momo");
+  const [notes, setNotes] = useState("");
+  const [momoNumber, setMomoNumber] = useState("");
   const [motorbikes, setMotorbikes] = useState([]);
 
-  const currentUser = useSelector((state) => state.user.currentUser?.userName || '');
+  const currentUser = useSelector((state) => state.user.currentUser?.userName || "");
 
-  // Fetch motorbikes using the same pattern as you provided
+  // Fetch motorbikes with filtering based on user
   useEffect(() => {
     const fetchMotorbikes = async () => {
       try {
-        const response = await fetch('/api/motorbikes');
+        const response = await fetch("/api/motorbikes");
         const data = await response.json();
-        const sortedMotorbikes = data.sort((a, b) => String(a.model).localeCompare(String(b.model)));
+
+        const filteredMotorbikes = data.filter((motorbike) => {
+          if (currentUser === "Pinkrah") {
+            return motorbike.registrationNumber === "M-24-VR 1084(Partnership)";
+          } else if (currentUser === "Miller") {
+            return motorbike.registrationNumber === "ABOBOYAA-BIKE 1";
+          } else if (currentUser === "David") {
+            return motorbike.registrationNumber !== "ABOBOYAA-BIKE 1";
+          }
+          return motorbike.registrationNumber !== "Unknown";
+        });
+
         setMotorbikes(
-          sortedMotorbikes.map((motorbike) => ({
-            label: `${motorbike.registrationNumber}`,
+          filteredMotorbikes.map((motorbike) => ({
+            label: motorbike.registrationNumber,
             value: motorbike._id,
           }))
         );
       } catch (error) {
-        console.error('Error fetching motorbikes:', error);
+        console.error("Error fetching motorbikes:", error);
       }
     };
 
     fetchMotorbikes();
-  }, []);
+  }, [currentUser]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     const transferData = {
-      motorbike: selectedMotorbike?.value || '',
+      motorbike: selectedMotorbike?.value || "",
       amount,
       paymentMethod,
-      momoNumber: paymentMethod === 'Momo' ? momoNumber : '',
+      momoNumber: paymentMethod === "Momo" ? momoNumber : "",
       notes,
       recordedBy: currentUser,
     };
 
     try {
-      const response = await fetch('/api/transfers', {
-        method: 'POST',
+      const response = await fetch("/api/transfers", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(transferData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save transfer');
+        throw new Error("Failed to save transfer");
       }
 
       const result = await response.json();
-      window.alert('Transfer saved successfully!');
+      window.alert("Transfer saved successfully!");
       handleSave(result);
       handleClose();
     } catch (error) {
-      console.error('Error:', error);
-      window.alert('Error saving transfer');
+      console.error("Error:", error);
+      window.alert("Error saving transfer");
     }
   };
 
@@ -131,7 +142,7 @@ const TransferModal = ({ show, handleClose, handleSave }) => {
                 </InputGroup>
               </Form.Group>
             </Col>
-            {paymentMethod === 'Momo' && (
+            {paymentMethod === "Momo" && (
               <Col md={6}>
                 <Form.Group controlId="momoNumber" className="mt-3">
                   <Form.Label>Momo Number</Form.Label>
@@ -144,7 +155,7 @@ const TransferModal = ({ show, handleClose, handleSave }) => {
                       placeholder="Enter Momo number"
                       value={momoNumber}
                       onChange={(e) => setMomoNumber(e.target.value)}
-                      required={paymentMethod === 'Momo'}
+                      required={paymentMethod === "Momo"}
                     />
                   </InputGroup>
                 </Form.Group>

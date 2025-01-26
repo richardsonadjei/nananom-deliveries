@@ -25,11 +25,18 @@ const ExpenseReportViewer = () => {
         const response = await fetch("/api/motorbikes");
         if (response.ok) {
           const result = await response.json();
-          const filteredBikes = result.filter((bike) =>
-            currentUser === "Pinkrah"
-              ? bike.registrationNumber === "M-24-VR 1084(Partnership)"
-              : true
-          );
+
+          // Filter motorbikes based on user roles
+          const filteredBikes = result.filter((bike) => {
+            if (currentUser === "Pinkrah") {
+              return bike.registrationNumber === "M-24-VR 1084(Partnership)";
+            } else if (currentUser === "Miller") {
+              return bike.registrationNumber === "ABOBOYAA-BIKE 1";
+            } else if (currentUser === "David") {
+              return bike.registrationNumber !== "ABOBOYAA-BIKE 1";
+            }
+            return bike.registrationNumber !== "Unknown";
+          });
 
           setBikes(
             filteredBikes.map((bike) => ({
@@ -146,59 +153,26 @@ const ExpenseReportViewer = () => {
                 />
               </Col>
               <Col md={3}>
-                <div className="position-relative">
-                  <Form.Control
-                    type="text"
-                    placeholder="Search by notes"
-                    value={filters.search}
-                    onChange={(e) => handleFilterChange("search", e.target.value)}
-                  />
-                  {filters.search && (
-                    <Button
-                      variant="link"
-                      className="position-absolute end-0 top-50 translate-middle-y me-2"
-                      onClick={() => handleFilterChange("search", "")}
-                    >
-                      ✖
-                    </Button>
-                  )}
-                </div>
+                <Form.Control
+                  type="text"
+                  placeholder="Search by notes"
+                  value={filters.search}
+                  onChange={(e) => handleFilterChange("search", e.target.value)}
+                />
               </Col>
               <Col md={3}>
-                <div className="position-relative">
-                  <Form.Control
-                    type="date"
-                    value={filters.startDate}
-                    onChange={(e) => handleFilterChange("startDate", e.target.value)}
-                  />
-                  {filters.startDate && (
-                    <Button
-                      variant="link"
-                      className="position-absolute end-0 top-50 translate-middle-y me-2"
-                      onClick={() => handleFilterChange("startDate", "")}
-                    >
-                      ✖
-                    </Button>
-                  )}
-                </div>
+                <Form.Control
+                  type="date"
+                  value={filters.startDate}
+                  onChange={(e) => handleFilterChange("startDate", e.target.value)}
+                />
               </Col>
               <Col md={3}>
-                <div className="position-relative">
-                  <Form.Control
-                    type="date"
-                    value={filters.endDate}
-                    onChange={(e) => handleFilterChange("endDate", e.target.value)}
-                  />
-                  {filters.endDate && (
-                    <Button
-                      variant="link"
-                      className="position-absolute end-0 top-50 translate-middle-y me-2"
-                      onClick={() => handleFilterChange("endDate", "")}
-                    >
-                      ✖
-                    </Button>
-                  )}
-                </div>
+                <Form.Control
+                  type="date"
+                  value={filters.endDate}
+                  onChange={(e) => handleFilterChange("endDate", e.target.value)}
+                />
               </Col>
             </Row>
           </div>
@@ -218,30 +192,28 @@ const ExpenseReportViewer = () => {
 
           <div className="motorbike-expense-report-table mt-3">
             {expenses.length > 0 ? (
-              <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: "400px" }}>
-                <Table bordered hover style={{ minWidth: "1000px" }}>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Date</th>
-                      <th>Category</th>
-                      <th>Notes</th>
-                      <th>Amount (GHC)</th>
+              <Table bordered hover>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Notes</th>
+                    <th>Amount (GHC)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {expenses.map((expense, index) => (
+                    <tr key={expense.id}>
+                      <td>{index + 1}</td>
+                      <td>{new Date(expense.date).toDateString()}</td>
+                      <td>{expense.category || "N/A"}</td>
+                      <td>{expense.notes || "N/A"}</td>
+                      <td>{expense.amount.toLocaleString()}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {expenses.map((expense, index) => (
-                      <tr key={expense.id}>
-                        <td>{index + 1}</td>
-                        <td>{new Date(expense.date).toDateString()}</td>
-                        <td>{expense.category || "N/A"}</td>
-                        <td>{expense.notes || "N/A"}</td>
-                        <td>{expense.amount.toLocaleString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </div>
+                  ))}
+                </tbody>
+              </Table>
             ) : (
               <p className="text-center mt-3">No expenses match the selected filters.</p>
             )}

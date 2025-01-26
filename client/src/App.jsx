@@ -7,23 +7,11 @@ import SignUp from './pages/SignUp';
 import Header from './components/Header';
 import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
-import RecordSales from './pages/RecordSales';
-import BuyFuel from './pages/BuyFuel';
-import RecordMaintenance from './pages/RecordMaintenance';
-import RecordOtherExpense from './pages/RecordOtherExpense';
-import FuelReport from './pages/reports/FuelReport';
-import MaintenanceReport from './pages/reports/MaintenanceReport';
-import OtherExpenseReport from './pages/reports/OtherExpenseReport';
-import ProfitLossReport from './pages/reports/ProfitLossReport';
-import DailySalesReport from './pages/reports/DailySalesReport';
-import MoMoDeposit from './pages/MomoDeposit';
-import MomoDepositReport from './pages/reports/MomoDepositReport';
 
-import AllIncome from './pages/reports-new/allreports/AllIncomeReport';
-import IncomeByPeriod from './pages/reports-new/allreports/IncomeByPeriod';
+
+
 import { MotorbikeProvider } from './pages/reports-new/allreports/MotorBikeContext';
-import AllExpenseReport from './pages/reports-new/allreports/expenseReports/AllExpenseReport';
-import ExpenseByPeriod from './pages/reports-new/allreports/expenseReports/ExpenseByPeriod';
+
 import AllEmployeesReport from './pages/HumanResource/EmployeeList';
 import AllPayrollsReport from './pages/HumanResource/PayRoll';
 import ExpenseReportViewer from './pages/reports-new/allreports/expenseReports/AllExpenseReportNew';
@@ -44,23 +32,15 @@ export default function App() {
             <Route path='/sign-up' element={<SignUp />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/' element={<Home />} />
-            <Route path='/record-daily-sales' element={<RecordSales />} />
-            <Route path='/buy-fuel' element={<BuyFuel />} />
-            <Route path='/record-maintenance' element={<RecordMaintenance />} />
-            <Route path='/record-other-expense' element={<RecordOtherExpense />} />
-            <Route path='/fuel-reports' element={<FuelReport />} />
-            <Route path='/maintenance-reports' element={<MaintenanceReport />} />
-            <Route path='/other-expense-reports' element={<OtherExpenseReport />} />
-            <Route path='/profit-loss-reports' element={<ProfitLossReport />} />
-            <Route path='/daily-sales-report' element={<DailySalesReport />} />
-            <Route path='/add-momo-deposits' element={<MoMoDeposit />} />
-            <Route path='/momo-deposits' element={<MomoDepositReport />} />
+           
+            
+           
             <Route path='/expense-reports' element={<ExpenseReportViewer />} />
             <Route path='/income-reports' element={<IncomeReportViewer />} />
-            <Route path='/all-bike-income' element={<AllIncome />} />
-            <Route path='/all-bike-income-by-period' element={<IncomeByPeriod />} />
-            <Route path='/all-bike-expense' element={<AllExpenseReport/>} />
-            <Route path='/all-bike-expense-by-period' element={<ExpenseByPeriod/>} />
+           
+           
+           
+    
             <Route path='/employee-list' element={<AllEmployeesReport/>} />
             <Route path='/payrolls' element={<AllPayrollsReport/>} />
             <Route path='/motor-profit-loss-reports' element={<ProfitLossReportViewer/>} />

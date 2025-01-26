@@ -42,11 +42,21 @@ const RecentTransactions = () => {
         (a, b) => new Date(b.date) - new Date(a.date)
       );
 
-      // If the current user is "Pinkrah", filter transactions to only show for M-24-VR 1084(Partnership)
+      // Filter transactions based on the current user
       if (currentUser === "Pinkrah") {
         allTransactions = allTransactions.filter(
           (transaction) =>
             transaction.motorbike?.registrationNumber === "M-24-VR 1084(Partnership)"
+        );
+      } else if (currentUser === "Miller") {
+        allTransactions = allTransactions.filter(
+          (transaction) =>
+            transaction.motorbike?.registrationNumber === "ABOBOYAA-BIKE 1"
+        );
+      } else if (currentUser === "David") {
+        allTransactions = allTransactions.filter(
+          (transaction) =>
+            transaction.motorbike?.registrationNumber !== "ABOBOYAA-BIKE 1"
         );
       }
 
@@ -57,10 +67,10 @@ const RecentTransactions = () => {
   };
 
   useEffect(() => {
-    // Fetch transactions every second (1000ms)
+    // Fetch transactions every 100 seconds
     const intervalId = setInterval(() => {
       fetchTransactions();
-    }, 1000);
+    }, 100000);
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
