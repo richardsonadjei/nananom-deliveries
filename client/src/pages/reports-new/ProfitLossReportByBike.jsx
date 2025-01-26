@@ -23,7 +23,6 @@ const ProfitLossReportViewer = () => {
 
   const currentUser = useSelector((state) => state.user.currentUser?.userName || "");
 
-  // Fetch motorbikes on mount
   useEffect(() => {
     const fetchMotorbikes = async () => {
       try {
@@ -57,7 +56,6 @@ const ProfitLossReportViewer = () => {
     fetchMotorbikes();
   }, [currentUser]);
 
-  // Fetch profit or loss whenever filters change
   useEffect(() => {
     if (!filters.motorbike) {
       setData([]);
@@ -86,23 +84,33 @@ const ProfitLossReportViewer = () => {
         const result = await response.json();
 
         if (result.success) {
+          const incomes = result.data.incomes || [];
+          const expenses = result.data.expenses || [];
+
           const combinedData = [
-            ...result.data.incomes.map((income) => ({
+            ...incomes.map((income) => ({
               ...income,
               type: "Income",
             })),
-            ...result.data.expenses.map((expense) => ({
+            ...expenses.map((expense) => ({
               ...expense,
               type: "Expense",
             })),
-          ].sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort by most recent first
+          ].sort((a, b) => new Date(b.date) - new Date(a.date)); 
 
           setData(combinedData);
           setSummary({
-            totalIncome: result.data.totalIncome,
-            totalExpenses: result.data.totalExpenses,
-            netProfitOrLoss: result.data.netProfitOrLoss,
-            status: result.data.status,
+            totalIncome: incomes.reduce((sum, income) => sum + income.amount, 0),
+            totalExpenses: expenses.reduce((sum, expense) => sum + expense.amount, 0),
+            netProfitOrLoss:
+              incomes.reduce((sum, income) => sum + income.amount, 0) -
+              expenses.reduce((sum, expense) => sum + expense.amount, 0),
+            status:
+              incomes.reduce((sum, income) => sum + income.amount, 0) -
+                expenses.reduce((sum, expense) => sum + expense.amount, 0) >=
+              0
+                ? "Profit"
+                : "Loss",
           });
         } else {
           setError(result.message || "No data available for the selected filters.");
@@ -118,7 +126,6 @@ const ProfitLossReportViewer = () => {
     fetchProfitOrLoss();
   }, [filters]);
 
-  // Export data to Excel
   const exportToExcel = () => {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
@@ -153,7 +160,7 @@ const ProfitLossReportViewer = () => {
 
       {error && <p className="text-danger text-center">{error}</p>}
 
-      {summary.totalIncome > 0 && (
+      {(summary.totalIncome > 0 || summary.totalExpenses > 0 || summary.netProfitOrLoss !== 0) && (
         <Card className="motorbike-profit-loss-card">
           <Card.Body>
             <h5>Total Income: GHC {summary.totalIncome.toLocaleString()}</h5>
@@ -196,7 +203,15 @@ const ProfitLossReportViewer = () => {
                 >
                   <td>{index + 1}</td>
                   <td>{record.type}</td>
-                  <td>{new Date(record.date).toLocaleDateString()}</td>
+                  <td>
+  {new Date(record.date).toLocaleDateString("en-US", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })}
+</td>
+
                   <td>{record.type === "Expense" ? record.category.name || "N/A" : "N/A"}</td>
                   <td>{record.notes || "N/A"}</td>
                   <td>{record.amount.toLocaleString()}</td>
