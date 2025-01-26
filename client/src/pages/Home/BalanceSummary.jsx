@@ -101,7 +101,7 @@ const BalanceSummary = () => {
 
   useEffect(() => {
     fetchData();
-    const intervalId = setInterval(fetchData, 100000);
+    const intervalId = setInterval(fetchData, 1000);
     return () => clearInterval(intervalId);
   }, []);
 

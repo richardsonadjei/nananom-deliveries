@@ -70,7 +70,7 @@ const RecentTransactions = () => {
     // Fetch transactions every 100 seconds
     const intervalId = setInterval(() => {
       fetchTransactions();
-    }, 100000);
+    }, 1000);
 
     // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
